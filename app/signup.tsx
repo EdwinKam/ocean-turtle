@@ -6,6 +6,7 @@ import ScreenWrapper from '@/components/ScreenWrapper';
 import { theme } from '@/constants/theme';
 import { hp, wp } from '@/lib/common';
 import { authWithGoogle, verifyToken } from '@/lib/firebase';
+import auth from '@react-native-firebase/auth';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
@@ -13,32 +14,64 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const SignUp = () => {
   const router = useRouter();
-  const usernameRef = useRef('');
   const emailRef = useRef('');
   const passwordRef = useRef('');
+  const confirmRef = useRef('');
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
-    if (!emailRef.current || !passwordRef.current || !usernameRef.current) {
+    if (!emailRef.current || !passwordRef.current || !confirmRef.current) {
       Alert.alert('Sign Up', 'Please fill all the fields!');
 
       return;
+    }
+
+    if (passwordRef.current != confirmRef.current) {
+      Alert.alert('Sign Up', 'Password does not match!');
+
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await auth().createUserWithEmailAndPassword(
+        emailRef.current,
+        passwordRef.current
+      );
+
+      console.log('User account created & signed in!');
+
+      router.push('/home');
+    } catch (error: any) {
+      console.error(error);
+
+      if (error.code === 'auth/email-already-in-use') {
+        console.log('That email address is already in use!');
+        Alert.alert('Sign In', 'Email is already in use');
+      }
+
+      if (error.code === 'auth/invalid-email') {
+        console.log('That email address is invalid!');
+        Alert.alert('Sign In', 'Email is invalid');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   const signInWithGoogle = async () => {
     try {
-      setLoading(true);
-      const firebaseUserCredential = await authWithGoogle(); // Use the new function
+      const firebaseUserCredential = await authWithGoogle();
       const firebaseToken = await firebaseUserCredential.user.getIdToken();
+      const responseData = await verifyToken(firebaseToken);
+      console.log(responseData);
 
-      const responseData = await verifyToken(firebaseToken); // Use the new function
       if (responseData.errorCode || !responseData.validToken) {
         Alert.alert('Sign Up', 'Google Sign Up was unsuccessful');
+
         return;
       }
-
-      router.push('/home');
     } catch (error: any) {
       console.error('Google Sign-In Error:', error);
       Alert.alert('Sign Up', 'Google Sign Up was unsuccessful');
@@ -67,19 +100,6 @@ const SignUp = () => {
           <Input
             icon={
               <Icon
-                name='user'
-                size={26}
-                strokeWidth={1.6}
-              />
-            }
-            placeholder='Enter your username'
-            onChangeText={(value) => {
-              usernameRef.current = value;
-            }}
-          />
-          <Input
-            icon={
-              <Icon
                 name='mail'
                 size={26}
                 strokeWidth={1.6}
@@ -104,6 +124,20 @@ const SignUp = () => {
             }}
             secureTextEntry={true}
           />
+          <Input
+            icon={
+              <Icon
+                name='lock'
+                size={26}
+                strokeWidth={1.6}
+              />
+            }
+            placeholder='Confirm your password'
+            onChangeText={(value) => {
+              confirmRef.current = value;
+            }}
+            secureTextEntry={true}
+          />
           <Button
             title={'Sign Up'}
             loading={loading}
@@ -113,10 +147,17 @@ const SignUp = () => {
           />
           <Button
             title='Sign Up with Google'
-            loading={loading}
+            loading={undefined}
             onPress={signInWithGoogle}
             buttonStyle={styles.googleButton}
             textStyle={styles.googleButtonText}
+            icon={
+              <Icon
+                name='google'
+                size={26}
+                strokeWidth={1.6}
+              />
+            }
           />
         </View>
 

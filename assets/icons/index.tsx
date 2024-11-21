@@ -1,7 +1,10 @@
+import AddSquare from '@/assets/icons/AddSquare';
 import ArrowLeft from '@/assets/icons/ArrowLeft';
+import Google from '@/assets/icons/Google';
 import Home from '@/assets/icons/Home';
 import Lock from '@/assets/icons/Lock';
 import Mail from '@/assets/icons/Mail';
+import SignOut from '@/assets/icons/SignOut';
 import User from '@/assets/icons/User';
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -13,9 +16,12 @@ const icons: Record<string, React.FC<SvgProps>> = {
   mail: Mail,
   lock: Lock,
   user: User,
+  google: Google,
+  signOut: SignOut,
+  addSquare: AddSquare,
 };
 
-type IconProps = SvgProps & {
+export type IconProps = SvgProps & {
   name: keyof typeof icons;
   size?: number;
   strokeWidth?: number;
