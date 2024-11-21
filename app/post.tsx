@@ -1,27 +1,23 @@
 import ScreenWrapper from '@/components/ScreenWrapper';
-import SignOutButton from '@/components/SignOutButton';
-import TabBar from '@/components/TabBar';
 import { theme } from '@/constants/theme';
 import { hp, wp } from '@/lib/common';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const Home = () => {
+const Post = () => {
   const router = useRouter();
 
   return (
     <ScreenWrapper>
       <View style={styles.container}>
-        <SignOutButton router={router} />
-        <Text style={styles.title}>Trend</Text>
+        <Text style={styles.title}>Create Post</Text>
       </View>
-      <TabBar router={router} />
     </ScreenWrapper>
   );
 };
 
-export default Home;
+export default Post;
 
 const styles = StyleSheet.create({
   container: {

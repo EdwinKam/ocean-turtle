@@ -6,6 +6,7 @@ import ScreenWrapper from '@/components/ScreenWrapper';
 import { theme } from '@/constants/theme';
 import { hp, wp } from '@/lib/common';
 import { authWithGoogle, verifyToken } from '@/lib/firebase';
+import auth from '@react-native-firebase/auth';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
@@ -20,14 +21,34 @@ const SignIn = () => {
   const onSubmit = async () => {
     if (!emailRef.current || !passwordRef.current) {
       Alert.alert('Sign In', 'Please fill all the fields!');
-
       return;
+    }
+
+    try {
+      setLoading(true);
+
+      await auth().signInWithEmailAndPassword(
+        emailRef.current,
+        passwordRef.current
+      );
+
+      console.log('User signed in!');
+
+      router.push('/home');
+    } catch (error: any) {
+      console.error(error);
+
+      if (error.code === 'auth/invalid-credential') {
+        console.log('Email and Password do not match!');
+        Alert.alert('Sign In', 'Email and password do not match');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   const signInWithGoogle = async () => {
     try {
-      setLoading(true);
       const firebaseUserCredential = await authWithGoogle(); // Use the new function
       const firebaseToken = await firebaseUserCredential.user.getIdToken();
 
@@ -36,8 +57,6 @@ const SignIn = () => {
         Alert.alert('Sign Up', 'Google Sign Up was unsuccessful');
         return;
       }
-
-      router.push('/home');
     } catch (error: any) {
       console.error('Google Sign-In Error:', error);
       Alert.alert('Sign Up', 'Google Sign In was unsuccessful');
@@ -97,13 +116,21 @@ const SignIn = () => {
             onPress={onSubmit}
             buttonStyle={undefined}
             textStyle={undefined}
+            icon={undefined}
           />
           <Button
-            title='Sign Up with Google'
-            loading={loading}
+            title='Sign In with Google'
+            loading={undefined}
             onPress={signInWithGoogle}
             buttonStyle={styles.googleButton}
             textStyle={styles.googleButtonText}
+            icon={
+              <Icon
+                name='google'
+                size={26}
+                strokeWidth={1.6}
+              />
+            }
           />
         </View>
 

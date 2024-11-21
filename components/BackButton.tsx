@@ -1,14 +1,11 @@
 import Icon from '@/assets/icons';
 import { theme } from '@/constants/theme';
 import { Router } from 'expo-router';
-import {
-  Pressable,
-  StyleSheet
-} from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 type BackButtonProps = {
   size?: number;
-  router: Router; // Explicitly type the router prop
+  router: Router;
 };
 
 const BackButton: React.FC<BackButtonProps> = ({ size = 26, router }) => {
