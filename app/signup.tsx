@@ -73,8 +73,8 @@ const SignUp = () => {
         return;
       }
     } catch (error: any) {
-      console.error("Google Sign-In Error:", error);
-      Alert.alert("Sign Up", "Google Sign Up was unsuccessful");
+      console.error('Google Sign-In Error:', error);
+      Alert.alert('Sign Up', 'Google Sign Up was unsuccessful');
     } finally {
       setLoading(false);
     }
@@ -82,7 +82,7 @@ const SignUp = () => {
 
   return (
     <ScreenWrapper>
-      <StatusBar style="dark" />
+      <StatusBar style='dark' />
       <View style={styles.container}>
         <BackButton router={router} />
 
@@ -139,7 +139,7 @@ const SignUp = () => {
             secureTextEntry={true}
           />
           <Button
-            title={"Sign Up"}
+            title={'Sign Up'}
             loading={loading}
             onPress={onSubmit}
             buttonStyle={undefined}
@@ -165,7 +165,7 @@ const SignUp = () => {
           <Text style={styles.footerText}>Already have an account?</Text>
           <Pressable
             onPress={() => {
-              router.push("/signin");
+              router.push('/signin');
             }}
           >
             <Text
@@ -206,29 +206,29 @@ const styles = StyleSheet.create({
   },
 
   forgotPassword: {
-    textAlign: "right",
+    textAlign: 'right',
     fontWeight: theme.fonts.semibold,
     color: theme.light.text,
   },
 
   footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     gap: 5,
   },
 
   footerText: {
-    textAlign: "center",
+    textAlign: 'center',
     color: theme.light.text,
     fontSize: hp(1.6),
   },
 
   googleButton: {
-    backgroundColor: "#4285F4",
+    backgroundColor: '#4285F4',
   },
 
   googleButtonText: {
-    color: "#fff",
+    color: '#fff',
   },
 });
