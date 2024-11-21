@@ -2,6 +2,21 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+# Prereq
+
+1. downlaod xcode
+2. download android sdk
+3. clone this repo
+4. then download `google-servies.json` and `GoogleService-Info.plist` from https://console.firebase.google.com/u/1/project/ocean-app-a4c89/settings/general/ios:com.ocean.turtle.ios -> `turtle android` and `turtle ios` and paste to root folder
+5. download `.env.local` from https://drive.google.com/file/d/1IjDtl_xEptHgX3KzuUtrhHVSbSBJAuzD/view?usp=drive_link and paste to root. Make sure you name it `.env.local`
+
+## First time developer
+
+1. build the ios project
+   ```bash
+   npx expo prebuild --clean
+   ```
+
 ## Get started
 
 1. Install dependencies
@@ -16,35 +31,5 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
     npx expo start
    ```
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3. select platform, eg: i for iOS
+   note: if you get this error `Xcode must be fully installed before you can continue`, run this `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
