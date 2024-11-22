@@ -5,7 +5,7 @@ import Input from '@/components/Input';
 import ScreenWrapper from '@/components/ScreenWrapper';
 import { theme } from '@/constants/theme';
 import { hp, wp } from '@/lib/common';
-import { authWithGoogle, verifyToken } from '@/lib/firebase';
+import { authWithGoogle } from '@/lib/firebase';
 import auth from '@react-native-firebase/auth';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -31,10 +31,6 @@ const SignIn = () => {
         emailRef.current,
         passwordRef.current
       );
-
-      console.log('User signed in!');
-
-      router.push('/home');
     } catch (error: any) {
       console.error(error);
 
@@ -49,14 +45,7 @@ const SignIn = () => {
 
   const signInWithGoogle = async () => {
     try {
-      const firebaseUserCredential = await authWithGoogle(); // Use the new function
-      const firebaseToken = await firebaseUserCredential.user.getIdToken();
-
-      const responseData = await verifyToken(firebaseToken); // Use the new function
-      if (responseData.errorCode || !responseData.validToken) {
-        Alert.alert('Sign Up', 'Google Sign Up was unsuccessful');
-        return;
-      }
+      await authWithGoogle();
     } catch (error: any) {
       console.error('Google Sign-In Error:', error);
       Alert.alert('Sign Up', 'Google Sign In was unsuccessful');

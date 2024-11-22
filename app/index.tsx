@@ -2,10 +2,11 @@ import Loading from '@/components/Loading';
 import ScreenWrapper from '@/components/ScreenWrapper';
 import { theme } from '@/constants/theme';
 import { hp, wp } from '@/lib/common';
+import { verifyToken } from '@/lib/firebase';
 import auth from '@react-native-firebase/auth'; // Firebase Authentication
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 
 const Index = () => {
   const router = useRouter();
@@ -14,9 +15,17 @@ const Index = () => {
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(async (user) => {
       if (user) {
-        //TODO: handle user / password token verification
-        // const firebaseToken = user.getIdToken();
-        // verifyToken(await firebaseToken);
+        const firebaseToken = user.getIdToken();
+        const responseData = await verifyToken(await firebaseToken);
+        console.log(responseData);
+
+        if (responseData.errorCode || !responseData.validToken) {
+          Alert.alert('Authentication', 'Operation was unsuccessful');
+          return;
+        }
+
+        console.log('User signed in!');
+
         router.push('/home');
       } else {
         router.push('/welcome');
