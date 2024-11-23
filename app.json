@@ -19,7 +19,7 @@
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.ocean.turtle.ios"
+      "package": "com.ocean.turtle.android"
     },
     "web": {
       "bundler": "metro",

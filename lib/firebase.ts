@@ -19,15 +19,26 @@ export const authWithGoogle = async () => {
 };
 
 export const verifyToken = async (firebaseToken: string) => {
-  const response = await fetch(
-    `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/auth/verify`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        accessToken: firebaseToken,
-      },
+  try {
+    console.log('base url: ' + process.env.EXPO_PUBLIC__BACKEND_HOST);
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/auth/verify`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          accessToken: firebaseToken,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  );
-  return await response.json();
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error verifying token:', error);
+    throw error; // Rethrow the error if you want to handle it further up the call stack
+  }
 };

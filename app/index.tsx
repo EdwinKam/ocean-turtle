@@ -12,6 +12,15 @@ const Index = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
+  const signOutUser = async () => {
+    try {
+      await auth().signOut();
+      console.log('User signed out!');
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(async (user) => {
       if (user) {
@@ -19,8 +28,9 @@ const Index = () => {
         const responseData = await verifyToken(await firebaseToken);
         console.log(responseData);
 
-        if (responseData.errorCode || !responseData.validToken) {
+        if (!responseData.success) {
           Alert.alert('Authentication', 'Operation was unsuccessful');
+          signOutUser();
           return;
         }
 
