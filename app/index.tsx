@@ -1,12 +1,12 @@
-import Loading from '@/components/Loading';
-import ScreenWrapper from '@/components/ScreenWrapper';
-import { theme } from '@/constants/theme';
-import { hp, wp } from '@/lib/common';
-import { verifyToken } from '@/lib/firebase';
-import auth from '@react-native-firebase/auth'; // Firebase Authentication
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import Loading from "@/components/Loading";
+import ScreenWrapper from "@/components/ScreenWrapper";
+import { theme } from "@/constants/theme";
+import { hp, wp } from "@/lib/common";
+import { verifyToken } from "@/lib/firebase";
+import auth from "@react-native-firebase/auth"; // Firebase Authentication
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Alert, StyleSheet } from "react-native";
 
 const Index = () => {
   const router = useRouter();
@@ -15,9 +15,9 @@ const Index = () => {
   const signOutUser = async () => {
     try {
       await auth().signOut();
-      console.log('User signed out!');
+      console.log("User signed out!");
     } catch (error) {
-      console.error('Sign out error:', error);
+      console.error("Sign out error:", error);
     }
   };
 
@@ -28,17 +28,17 @@ const Index = () => {
         const responseData = await verifyToken(await firebaseToken);
         console.log(responseData);
 
-        if (!responseData.success) {
-          Alert.alert('Authentication', 'Operation was unsuccessful');
+        if (!responseData?.validToken === true) {
+          Alert.alert("Authentication", "Operation was unsuccessful");
           signOutUser();
           return;
         }
 
-        console.log('User signed in!');
+        console.log("User signed in!");
 
-        router.push('/home');
+        router.push("/home");
       } else {
-        router.push('/welcome');
+        router.push("/welcome");
       }
       setIsLoading(false);
     });
@@ -65,14 +65,14 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 0,
     paddingHorizontal: wp(5),
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   title: {
     color: theme.light.text,
     fontSize: hp(4),
-    textAlign: 'center',
+    textAlign: "center",
     fontWeight: theme.fonts.extrabold,
   },
 });
