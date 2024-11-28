@@ -11,6 +11,7 @@ export const authWithGoogle = async () => {
 
   const token = userInfo.data?.idToken;
   if (!token) {
+    // should not print this
     throw new Error("No token found in user info");
   }
 
