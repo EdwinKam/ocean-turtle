@@ -2,7 +2,7 @@ import Loading from "@/components/Loading";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
-import { verifyToken } from "@/lib/firebase";
+import { verifyToken } from "@/lib/authService";
 import auth from "@react-native-firebase/auth"; // Firebase Authentication
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -25,6 +25,8 @@ const Index = () => {
     const unsubscribe = auth().onAuthStateChanged(async (user) => {
       if (user) {
         const firebaseToken = user.getIdToken();
+        console.log("this is the access token");
+        console.log(await firebaseToken);
         const responseData = await verifyToken(await firebaseToken);
         console.log(responseData);
 

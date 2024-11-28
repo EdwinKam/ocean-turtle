@@ -1,17 +1,44 @@
-import ScreenWrapper from '@/components/ScreenWrapper';
-import { theme } from '@/constants/theme';
-import { hp, wp } from '@/lib/common';
-import { useRouter } from 'expo-router';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import ScreenWrapper from "@/components/ScreenWrapper";
+import { theme } from "@/constants/theme";
+import { hp, wp } from "@/lib/common";
+import { createPost } from "@/lib/postService";
+import { useRouter } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import auth from "@react-native-firebase/auth";
 
 const Post = () => {
   const router = useRouter();
+
+  const [postContent, setPostContent] = React.useState("");
+  const [loading, setLoading] = React.useState(false); // Add loading state
+
+  const submitCreatePost = async () => {
+    setLoading(true); // Set loading to true when the request starts
+    try {
+      const accessToken = (await auth().currentUser?.getIdToken()) || "";
+      await createPost({ accessToken, content: postContent });
+      router.push("/home");
+    } catch (error) {
+      console.error("Error creating post:", error);
+    } finally {
+      setLoading(false); // Set loading to false when the request completes
+    }
+  };
 
   return (
     <ScreenWrapper>
       <View style={styles.container}>
         <Text style={styles.title}>Create Post</Text>
+        <Input
+          placeholder="Enter post content"
+          onChangeText={(value) => {
+            setPostContent(value);
+          }}
+        />
+        <Button title={"Submit"} onPress={submitCreatePost} loading={loading} />
       </View>
     </ScreenWrapper>
   );
@@ -29,7 +56,7 @@ const styles = StyleSheet.create({
   title: {
     color: theme.light.text,
     fontSize: hp(4),
-    textAlign: 'center',
+    textAlign: "center",
     fontWeight: theme.fonts.extrabold,
   },
 });
