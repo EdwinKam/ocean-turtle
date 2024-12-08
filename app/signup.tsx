@@ -1,33 +1,33 @@
-import Icon from '@/assets/icons';
-import BackButton from '@/components/BackButton';
-import Button from '@/components/Button';
-import Input from '@/components/Input';
-import ScreenWrapper from '@/components/ScreenWrapper';
-import { theme } from '@/constants/theme';
-import { hp, wp } from '@/lib/common';
-import { authWithGoogle } from '@/lib/firebase';
-import auth from '@react-native-firebase/auth';
-import { useRouter } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import React, { useRef, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import Icon from "@/assets/icons";
+import BackButton from "@/components/BackButton";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import ScreenWrapper from "@/components/ScreenWrapper";
+import { theme } from "@/constants/theme";
+import { hp, wp } from "@/lib/common";
+import { authWithGoogle } from "@/lib/authService";
+import auth from "@react-native-firebase/auth";
+import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import React, { useRef, useState } from "react";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 const SignUp = () => {
   const router = useRouter();
-  const emailRef = useRef('');
-  const passwordRef = useRef('');
-  const confirmRef = useRef('');
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
+  const confirmRef = useRef("");
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
     if (!emailRef.current || !passwordRef.current || !confirmRef.current) {
-      Alert.alert('Sign Up', 'Please fill all the fields!');
+      Alert.alert("Sign Up", "Please fill all the fields!");
 
       return;
     }
 
     if (passwordRef.current != confirmRef.current) {
-      Alert.alert('Sign Up', 'Password does not match!');
+      Alert.alert("Sign Up", "Password does not match!");
 
       return;
     }
@@ -42,14 +42,14 @@ const SignUp = () => {
     } catch (error: any) {
       console.error(error);
 
-      if (error.code === 'auth/email-already-in-use') {
-        console.log('That email address is already in use!');
-        Alert.alert('Sign In', 'Email is already in use');
+      if (error.code === "auth/email-already-in-use") {
+        console.log("That email address is already in use!");
+        Alert.alert("Sign In", "Email is already in use");
       }
 
-      if (error.code === 'auth/invalid-email') {
-        console.log('That email address is invalid!');
-        Alert.alert('Sign In', 'Email is invalid');
+      if (error.code === "auth/invalid-email") {
+        console.log("That email address is invalid!");
+        Alert.alert("Sign In", "Email is invalid");
       }
     } finally {
       setLoading(false);
@@ -60,8 +60,8 @@ const SignUp = () => {
     try {
       await authWithGoogle();
     } catch (error: any) {
-      console.error('Google Sign-In Error:', error);
-      Alert.alert('Sign Up', 'Google Sign Up was unsuccessful');
+      console.error("Google Sign-In Error:", error);
+      Alert.alert("Sign Up", "Google Sign Up was unsuccessful");
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,7 @@ const SignUp = () => {
 
   return (
     <ScreenWrapper>
-      <StatusBar style='dark' />
+      <StatusBar style="dark" />
       <View style={styles.container}>
         <BackButton router={router} />
 
@@ -85,66 +85,42 @@ const SignUp = () => {
             Please enter the details to create an account
           </Text>
           <Input
-            icon={
-              <Icon
-                name='mail'
-                size={26}
-                strokeWidth={1.6}
-              />
-            }
-            placeholder='Enter your email'
+            icon={<Icon name="mail" size={26} strokeWidth={1.6} />}
+            placeholder="Enter your email"
             onChangeText={(value) => {
               emailRef.current = value;
             }}
           />
           <Input
-            icon={
-              <Icon
-                name='lock'
-                size={26}
-                strokeWidth={1.6}
-              />
-            }
-            placeholder='Enter your password'
+            icon={<Icon name="lock" size={26} strokeWidth={1.6} />}
+            placeholder="Enter your password"
             onChangeText={(value) => {
               passwordRef.current = value;
             }}
             secureTextEntry={true}
           />
           <Input
-            icon={
-              <Icon
-                name='lock'
-                size={26}
-                strokeWidth={1.6}
-              />
-            }
-            placeholder='Confirm your password'
+            icon={<Icon name="lock" size={26} strokeWidth={1.6} />}
+            placeholder="Confirm your password"
             onChangeText={(value) => {
               confirmRef.current = value;
             }}
             secureTextEntry={true}
           />
           <Button
-            title={'Sign Up'}
+            title={"Sign Up"}
             loading={loading}
             onPress={onSubmit}
             buttonStyle={undefined}
             textStyle={undefined}
           />
           <Button
-            title='Sign Up with Google'
+            title="Sign Up with Google"
             loading={undefined}
             onPress={signInWithGoogle}
             buttonStyle={styles.googleButton}
             textStyle={styles.googleButtonText}
-            icon={
-              <Icon
-                name='google'
-                size={26}
-                strokeWidth={1.6}
-              />
-            }
+            icon={<Icon name="google" size={26} strokeWidth={1.6} />}
           />
         </View>
 
@@ -152,7 +128,7 @@ const SignUp = () => {
           <Text style={styles.footerText}>Already have an account?</Text>
           <Pressable
             onPress={() => {
-              router.push('/signin');
+              router.push("/signin");
             }}
           >
             <Text
@@ -193,29 +169,29 @@ const styles = StyleSheet.create({
   },
 
   forgotPassword: {
-    textAlign: 'right',
+    textAlign: "right",
     fontWeight: theme.fonts.semibold,
     color: theme.light.text,
   },
 
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     gap: 5,
   },
 
   footerText: {
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.light.text,
     fontSize: hp(1.6),
   },
 
   googleButton: {
-    backgroundColor: '#4285F4',
+    backgroundColor: "#4285F4",
   },
 
   googleButtonText: {
-    color: '#fff',
+    color: "#fff",
   },
 });

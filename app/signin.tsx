@@ -1,26 +1,26 @@
-import Icon from '@/assets/icons';
-import BackButton from '@/components/BackButton';
-import Button from '@/components/Button';
-import Input from '@/components/Input';
-import ScreenWrapper from '@/components/ScreenWrapper';
-import { theme } from '@/constants/theme';
-import { hp, wp } from '@/lib/common';
-import { authWithGoogle } from '@/lib/firebase';
-import auth from '@react-native-firebase/auth';
-import { useRouter } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import React, { useRef, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import Icon from "@/assets/icons";
+import BackButton from "@/components/BackButton";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import ScreenWrapper from "@/components/ScreenWrapper";
+import { theme } from "@/constants/theme";
+import { hp, wp } from "@/lib/common";
+import { authWithGoogle } from "@/lib/authService";
+import auth from "@react-native-firebase/auth";
+import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import React, { useRef, useState } from "react";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 const SignIn = () => {
   const router = useRouter();
-  const emailRef = useRef('');
-  const passwordRef = useRef('');
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
     if (!emailRef.current || !passwordRef.current) {
-      Alert.alert('Sign In', 'Please fill all the fields!');
+      Alert.alert("Sign In", "Please fill all the fields!");
       return;
     }
 
@@ -34,9 +34,9 @@ const SignIn = () => {
     } catch (error: any) {
       console.error(error);
 
-      if (error.code === 'auth/invalid-credential') {
-        console.log('Email and Password do not match!');
-        Alert.alert('Sign In', 'Email and password do not match');
+      if (error.code === "auth/invalid-credential") {
+        console.log("Email and Password do not match!");
+        Alert.alert("Sign In", "Email and password do not match");
       }
     } finally {
       setLoading(false);
@@ -47,8 +47,8 @@ const SignIn = () => {
     try {
       await authWithGoogle();
     } catch (error: any) {
-      console.error('Google Sign-In Error:', error);
-      Alert.alert('Sign Up', 'Google Sign In was unsuccessful');
+      console.error("Google Sign-In Error:", error);
+      Alert.alert("Sign Up", "Google Sign In was unsuccessful");
     } finally {
       setLoading(false);
     }
@@ -56,7 +56,7 @@ const SignIn = () => {
 
   return (
     <ScreenWrapper>
-      <StatusBar style='dark' />
+      <StatusBar style="dark" />
       <View style={styles.container}>
         <BackButton router={router} />
 
@@ -72,27 +72,15 @@ const SignIn = () => {
             Please sign in to continue
           </Text>
           <Input
-            icon={
-              <Icon
-                name='mail'
-                size={26}
-                strokeWidth={1.6}
-              />
-            }
-            placeholder='Enter your email'
+            icon={<Icon name="mail" size={26} strokeWidth={1.6} />}
+            placeholder="Enter your email"
             onChangeText={(value) => {
               emailRef.current = value;
             }}
           />
           <Input
-            icon={
-              <Icon
-                name='lock'
-                size={26}
-                strokeWidth={1.6}
-              />
-            }
-            placeholder='Enter your password'
+            icon={<Icon name="lock" size={26} strokeWidth={1.6} />}
+            placeholder="Enter your password"
             onChangeText={(value) => {
               passwordRef.current = value;
             }}
@@ -100,7 +88,7 @@ const SignIn = () => {
           />
           <Text style={styles.forgotPassword}>Forget Password?</Text>
           <Button
-            title={'Sign In'}
+            title={"Sign In"}
             loading={loading}
             onPress={onSubmit}
             buttonStyle={undefined}
@@ -108,18 +96,12 @@ const SignIn = () => {
             icon={undefined}
           />
           <Button
-            title='Sign In with Google'
+            title="Sign In with Google"
             loading={undefined}
             onPress={signInWithGoogle}
             buttonStyle={styles.googleButton}
             textStyle={styles.googleButtonText}
-            icon={
-              <Icon
-                name='google'
-                size={26}
-                strokeWidth={1.6}
-              />
-            }
+            icon={<Icon name="google" size={26} strokeWidth={1.6} />}
           />
         </View>
 
@@ -127,7 +109,7 @@ const SignIn = () => {
           <Text style={styles.footerText}>Don't have an account?</Text>
           <Pressable
             onPress={() => {
-              router.push('/signup');
+              router.push("/signup");
             }}
           >
             <Text
@@ -168,29 +150,29 @@ const styles = StyleSheet.create({
   },
 
   forgotPassword: {
-    textAlign: 'right',
+    textAlign: "right",
     fontWeight: theme.fonts.semibold,
     color: theme.light.text,
   },
 
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     gap: 5,
   },
 
   footerText: {
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.light.text,
     fontSize: hp(1.6),
   },
 
   googleButton: {
-    backgroundColor: '#4285F4',
+    backgroundColor: "#4285F4",
   },
 
   googleButtonText: {
-    color: '#fff',
+    color: "#fff",
   },
 });
