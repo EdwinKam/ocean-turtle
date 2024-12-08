@@ -1,11 +1,12 @@
-import ScreenWrapper from '@/components/ScreenWrapper';
-import SignOutButton from '@/components/SignOutButton';
-import TabBar from '@/components/TabBar';
-import { theme } from '@/constants/theme';
-import { hp, wp } from '@/lib/common';
-import { useRouter } from 'expo-router';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import ScreenWrapper from "@/components/ScreenWrapper";
+import SignOutButton from "@/components/SignOutButton";
+import TabBar from "@/components/TabBar";
+import { theme } from "@/constants/theme";
+import { hp, wp } from "@/lib/common";
+import { useRouter } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import Recommendation from "./recommendation";
 
 const Home = () => {
   const router = useRouter();
@@ -15,6 +16,7 @@ const Home = () => {
       <View style={styles.container}>
         <SignOutButton router={router} />
         <Text style={styles.title}>Trend</Text>
+        <Recommendation />
       </View>
       <TabBar router={router} />
     </ScreenWrapper>
@@ -33,7 +35,7 @@ const styles = StyleSheet.create({
   title: {
     color: theme.light.text,
     fontSize: hp(4),
-    textAlign: 'center',
+    textAlign: "center",
     fontWeight: theme.fonts.extrabold,
   },
 });
