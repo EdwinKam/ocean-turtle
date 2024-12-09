@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     gap: 0,
-    paddingHorizontal: wp(5),
+    paddingHorizontal: wp(1),
   },
 
   title: {
