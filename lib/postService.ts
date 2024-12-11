@@ -4,6 +4,8 @@ import {
   GetBatchPostRequest,
   GetRecommendationPostRequest,
 } from "@/model/whaleRequests";
+import { getBatchUser } from "./userService";
+import User from "@/model/user";
 
 export const createPost = async (request: CreatePostRequest) => {
   console.log(
@@ -99,5 +101,24 @@ export async function getBatchPost(request: GetBatchPostRequest) {
   }
 
   const data = await response.json();
-  return data.posts;
+  const authorIds: string[] = Array.from(
+    new Set(data.posts.map((post) => post.authorId))
+  ); // get deduped authorId
+
+  const users: User[] = await getBatchUser({
+    accessToken: request.accessToken,
+    userIds: authorIds,
+  });
+
+  const userIdMap = users.reduce((map, user) => {
+    map[user.uid] = user;
+    return map;
+  }, {} as Record<string, User>);
+
+  const posts: Post[] = data.posts.map((post) => ({
+    author: userIdMap[post.authorId],
+    content: post.content,
+  }));
+
+  return posts;
 }

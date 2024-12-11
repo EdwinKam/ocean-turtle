@@ -2,13 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
-
-// Define the Post interface
-export interface Post {
-  subject: string;
-  content: string;
-  author: string;
-}
+import { Post } from "@/model/post";
 
 interface PostCardProps {
   post: Post;
@@ -19,9 +13,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     <View style={styles.postContainer}>
       <View style={styles.imagePlaceholder} />
       <Text style={[styles.textPadding, styles.postSubject]}>
-        {post.subject}
+        {post.content}
       </Text>
-      <Text style={[styles.textPadding, styles.postAuthor]}>{post.author}</Text>
+      <Text style={[styles.textPadding, styles.postAuthor]}>
+        {post.author?.username || "null"}
+      </Text>
     </View>
   );
 };

@@ -11,30 +11,9 @@ import {
   getRecommendationPostIdsForUser,
 } from "@/lib/postService";
 
-// Create some dummy posts with the new subject field
-const dummyPosts: Post[] = [
-  {
-    subject: "Nature",
-    content: "Exploring the beauty of nature",
-    author: "Alice",
-  },
-  { subject: "Technology", content: "The future of technology", author: "Bob" },
-  { subject: "Health", content: "Healthy living tips", author: "Charlie" },
-  {
-    subject: "Travel",
-    content: "Traveling the world on a budget",
-    author: "Diana",
-  },
-  {
-    subject: "Cooking",
-    content: "Mastering the art of cooking",
-    author: "Eve",
-  },
-];
-
 const Recommendation = () => {
   const [postIds, setPostIds] = React.useState<string[]>([]);
-  const [posts, setPosts] = React.useState([]);
+  const [posts, setPosts] = React.useState<Post[]>([]);
 
   useEffect(() => {
     const fetchAccessTokenAndPosts = async () => {
@@ -53,15 +32,7 @@ const Recommendation = () => {
     fetchAccessTokenAndPosts();
   }, []); // Add dependencies if needed
 
-  return (
-    <PostList
-      posts={posts.map((post) => ({
-        subject: post.content,
-        content: "Default content", // Replace with actual content if available
-        author: "Unknown author", // Replace with actual author if available
-      }))}
-    />
-  );
+  return <PostList posts={posts} />;
 };
 
 const styles = StyleSheet.create({
