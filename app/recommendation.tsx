@@ -6,7 +6,10 @@ import PostCard from "@/components/PostCard";
 import { Post } from "@/model/post";
 import PostList from "@/components/PostList";
 import auth from "@react-native-firebase/auth";
-import { getRecommendationPostsForUser } from "@/lib/postService";
+import {
+  getBatchPost,
+  getRecommendationPostIdsForUser,
+} from "@/lib/postService";
 
 // Create some dummy posts with the new subject field
 const dummyPosts: Post[] = [
@@ -30,16 +33,18 @@ const dummyPosts: Post[] = [
 ];
 
 const Recommendation = () => {
-  const [recommendationPosts, setRecommendationPosts] = React.useState<
-    string[]
-  >([]);
+  const [postIds, setPostIds] = React.useState<string[]>([]);
+  const [posts, setPosts] = React.useState([]);
 
   useEffect(() => {
     const fetchAccessTokenAndPosts = async () => {
       try {
         const accessToken = (await auth().currentUser?.getIdToken()) || "";
-        const posts = await getRecommendationPostsForUser({ accessToken });
-        setRecommendationPosts(posts);
+        const postIds = await getRecommendationPostIdsForUser({ accessToken });
+        setPostIds(postIds);
+
+        const posts = await getBatchPost({ accessToken, postIds });
+        setPosts(posts);
       } catch (error) {
         console.error("Error fetching access token or posts:", error);
       }
@@ -50,8 +55,8 @@ const Recommendation = () => {
 
   return (
     <PostList
-      posts={recommendationPosts.map((subject) => ({
-        subject: subject,
+      posts={posts.map((post) => ({
+        subject: post.content,
         content: "Default content", // Replace with actual content if available
         author: "Unknown author", // Replace with actual author if available
       }))}

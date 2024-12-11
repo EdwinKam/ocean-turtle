@@ -1,6 +1,7 @@
 import { Post } from "@/model/post";
 import {
   CreatePostRequest,
+  GetBatchPostRequest,
   GetRecommendationPostRequest,
 } from "@/model/whaleRequests";
 
@@ -33,9 +34,9 @@ export const createPost = async (request: CreatePostRequest) => {
   return data;
 };
 
-export const getRecommendationPostsForUser = async (
+export async function getRecommendationPostIdsForUser(
   request: GetRecommendationPostRequest
-): Promise<string[]> => {
+): Promise<string[]> {
   console.log(
     "calling " +
       `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/recommendation/get`
@@ -70,4 +71,33 @@ export const getRecommendationPostsForUser = async (
   } else {
     throw new Error("Unexpected response structure");
   }
-};
+}
+
+export async function getBatchPost(request: GetBatchPostRequest) {
+  const queryParams = request.postIds
+    .map((id) => `postIds=${encodeURIComponent(id)}`)
+    .join("&");
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/getBatchPost?${queryParams}`;
+
+  console.log("calling " + url);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "*/*", // Match the accept header from the curl command
+      accessToken: request.accessToken,
+    },
+  });
+
+  if (!response.ok) {
+    // If the response status is not OK, throw an error
+    const errorText = await response.text();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${errorText}`
+    );
+  }
+
+  const data = await response.json();
+  return data.posts;
+}
