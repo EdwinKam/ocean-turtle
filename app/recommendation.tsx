@@ -1,34 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
 import PostCard from "@/components/PostCard";
 import { Post } from "@/model/post";
 import PostList from "@/components/PostList";
-
-// Create some dummy posts with the new subject field
-const dummyPosts: Post[] = [
-  {
-    subject: "Nature",
-    content: "Exploring the beauty of nature",
-    author: "Alice",
-  },
-  { subject: "Technology", content: "The future of technology", author: "Bob" },
-  { subject: "Health", content: "Healthy living tips", author: "Charlie" },
-  {
-    subject: "Travel",
-    content: "Traveling the world on a budget",
-    author: "Diana",
-  },
-  {
-    subject: "Cooking",
-    content: "Mastering the art of cooking",
-    author: "Eve",
-  },
-];
+import auth from "@react-native-firebase/auth";
+import {
+  getBatchPost,
+  getRecommendationPostIdsForUser,
+} from "@/lib/postService";
 
 const Recommendation = () => {
-  return <PostList posts={dummyPosts} />;
+  const [postIds, setPostIds] = React.useState<string[]>([]);
+  const [posts, setPosts] = React.useState<Post[]>([]);
+
+  useEffect(() => {
+    const fetchAccessTokenAndPosts = async () => {
+      try {
+        const accessToken = (await auth().currentUser?.getIdToken()) || "";
+        const postIds = await getRecommendationPostIdsForUser({ accessToken });
+        setPostIds(postIds);
+
+        const posts = await getBatchPost({ accessToken, postIds });
+        setPosts(posts);
+      } catch (error) {
+        console.error("Error fetching access token or posts:", error);
+      }
+    };
+
+    fetchAccessTokenAndPosts();
+  }, []); // Add dependencies if needed
+
+  return <PostList posts={posts} />;
 };
 
 const styles = StyleSheet.create({
