@@ -5,3 +5,7 @@ export interface WhaleBaseRequest {
 export interface CreatePostRequest extends WhaleBaseRequest {
   content: string;
 }
+
+export interface GetRecommendationPostRequest extends WhaleBaseRequest {
+  // only need accessToken
+}

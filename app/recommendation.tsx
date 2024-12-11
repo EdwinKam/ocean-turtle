@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
 import PostCard from "@/components/PostCard";
 import { Post } from "@/model/post";
 import PostList from "@/components/PostList";
+import auth from "@react-native-firebase/auth";
+import { getRecommendationPostsForUser } from "@/lib/postService";
 
 // Create some dummy posts with the new subject field
 const dummyPosts: Post[] = [
@@ -28,7 +30,33 @@ const dummyPosts: Post[] = [
 ];
 
 const Recommendation = () => {
-  return <PostList posts={dummyPosts} />;
+  const [recommendationPosts, setRecommendationPosts] = React.useState<
+    string[]
+  >([]);
+
+  useEffect(() => {
+    const fetchAccessTokenAndPosts = async () => {
+      try {
+        const accessToken = (await auth().currentUser?.getIdToken()) || "";
+        const posts = await getRecommendationPostsForUser({ accessToken });
+        setRecommendationPosts(posts);
+      } catch (error) {
+        console.error("Error fetching access token or posts:", error);
+      }
+    };
+
+    fetchAccessTokenAndPosts();
+  }, []); // Add dependencies if needed
+
+  return (
+    <PostList
+      posts={recommendationPosts.map((subject) => ({
+        subject: subject,
+        content: "Default content", // Replace with actual content if available
+        author: "Unknown author", // Replace with actual author if available
+      }))}
+    />
+  );
 };
 
 const styles = StyleSheet.create({
