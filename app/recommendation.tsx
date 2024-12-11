@@ -4,6 +4,7 @@ import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
 import PostCard from "@/components/PostCard";
 import { Post } from "@/model/post";
+import PostList from "@/components/PostList";
 
 // Create some dummy posts with the new subject field
 const dummyPosts: Post[] = [
@@ -27,18 +28,7 @@ const dummyPosts: Post[] = [
 ];
 
 const Recommendation = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Recommendations</Text>
-      <FlatList
-        data={dummyPosts}
-        keyExtractor={(item, index) => index.toString()}
-        numColumns={2}
-        key={2} // Ensure a static key for consistent rendering
-        renderItem={({ item }) => <PostCard post={item} />} // Use PostCard component
-      />
-    </View>
-  );
+  return <PostList posts={dummyPosts} />;
 };
 
 const styles = StyleSheet.create({

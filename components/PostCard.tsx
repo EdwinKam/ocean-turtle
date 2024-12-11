@@ -29,10 +29,10 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 const styles = StyleSheet.create({
   postContainer: {
     flex: 1,
-    marginBottom: hp(2),
-    marginHorizontal: wp(2),
+    marginBottom: hp(0.5),
+    marginHorizontal: wp(0.5),
     backgroundColor: "#f9fcff", // Very light blue color
-    borderRadius: wp(2),
+    borderRadius: wp(3),
     alignItems: "flex-start",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
     overflow: "hidden", // Ensure children do not overflow the border radius
+    height: hp(27),
   },
   textPadding: {
     paddingHorizontal: wp(3), // Common horizontal padding for all text
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
   },
   imagePlaceholder: {
     width: "100%", // Make the image take up the full width of the card
-    height: wp(50), // Adjust the height as needed
+    height: "80%", // Adjust the height as needed
     backgroundColor: theme.light.icon,
   },
   postAuthor: {
