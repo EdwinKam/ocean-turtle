@@ -13,3 +13,7 @@ export interface GetRecommendationPostRequest extends WhaleBaseRequest {
 export interface GetBatchPostRequest extends WhaleBaseRequest {
   postIds: string[];
 }
+
+export interface GetBatchUserPublicDataRequest extends WhaleBaseRequest {
+  userIds: string[];
+}
