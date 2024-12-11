@@ -2,7 +2,13 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
-import { Post } from "@/model/post";
+
+// Define the Post interface
+export interface Post {
+  subject: string;
+  content: string;
+  author: string;
+}
 
 interface PostCardProps {
   post: Post;
@@ -11,55 +17,46 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
   return (
     <View style={styles.postContainer}>
-      <Text style={styles.postSubject}>{post.subject}</Text>
       <View style={styles.imagePlaceholder} />
-      <Text style={styles.postContent}>{post.content}</Text>
-      <Text style={styles.postAuthor}>by {post.author}</Text>
+      <Text style={[styles.textPadding, styles.postSubject]}>
+        {post.subject}
+      </Text>
+      <Text style={[styles.textPadding, styles.postAuthor]}>{post.author}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   postContainer: {
-    flex: 1, // Ensure each item takes up equal space
+    flex: 1,
     marginBottom: hp(2),
-    marginHorizontal: wp(2), // Add horizontal margin for spacing
-    padding: wp(4),
-    backgroundColor: theme.light.cardBackground, // Use theme for card background
+    marginHorizontal: wp(2),
+    backgroundColor: "#f9fcff", // Very light blue color
     borderRadius: wp(2),
-    alignItems: "center", // Center items vertically
-    // Shadow properties for iOS
+    alignItems: "flex-start",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    // Elevation for Android
     elevation: 3,
-    // Border properties
-    borderWidth: 1,
-    borderColor: theme.light.icon, // Use a theme color for the border
+    overflow: "hidden", // Ensure children do not overflow the border radius
+  },
+  textPadding: {
+    paddingHorizontal: wp(3), // Common horizontal padding for all text
+    paddingVertical: hp(0.5), // Common vertical padding for all text
   },
   postSubject: {
-    fontSize: hp(2.5),
-    fontWeight: "bold",
-    color: theme.light.text, // Use light theme text color
-    marginBottom: hp(1),
+    fontSize: hp(1.5),
+    color: theme.light.text,
   },
   imagePlaceholder: {
-    width: wp(15), // Reserve space for the image
-    height: wp(15),
-    backgroundColor: theme.light.icon, // Placeholder color
-    borderRadius: wp(2),
-    marginBottom: hp(1), // Space between image and text
-  },
-  postContent: {
-    fontSize: hp(2.2),
-    color: theme.light.text, // Use light theme text color
-    marginBottom: hp(0.5),
+    width: "100%", // Make the image take up the full width of the card
+    height: wp(50), // Adjust the height as needed
+    backgroundColor: theme.light.icon,
   },
   postAuthor: {
-    fontSize: hp(1.8),
-    color: theme.light.icon, // Use light theme icon color for author text
+    fontSize: hp(1),
+    color: theme.light.icon,
   },
 });
 
