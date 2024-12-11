@@ -24,21 +24,22 @@ const Index = () => {
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(async (user) => {
       if (user) {
-        const firebaseToken = user.getIdToken();
-        console.log("this is the access token");
-        console.log(await firebaseToken);
-        const responseData = await verifyToken(await firebaseToken);
-        console.log(responseData);
+        try {
+          const firebaseToken = await user.getIdToken();
+          console.log("This is the access token:", firebaseToken);
 
-        if (!responseData?.validToken === true) {
+          const responseData = await verifyToken(firebaseToken);
+
+          if (!responseData?.validToken) {
+            throw new Error("Invalid token");
+          }
+
+          console.log("User signed in!");
+          router.push("/home");
+        } catch (error) {
           Alert.alert("Authentication", "Operation was unsuccessful");
           signOutUser();
-          return;
         }
-
-        console.log("User signed in!");
-
-        router.push("/home");
       } else {
         router.push("/welcome");
       }
