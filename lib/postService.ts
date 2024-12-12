@@ -161,8 +161,8 @@ export async function getOwnPosts(accessToken: string): Promise<Post[]> {
   }, {} as Record<string, User>);
 
   const posts: Post[] = data.posts.map((post) => ({
-    author: userIdMap[post.authorId],
-    content: post.content,
+    ...post, // Copy all fields from the original post
+    author: userIdMap[post.authorId], // Override the author field
   }));
 
   return posts;

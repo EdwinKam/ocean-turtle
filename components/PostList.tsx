@@ -7,17 +7,24 @@ import { Post } from "@/model/post";
 
 type PostListProps = {
   posts: Post[];
+  showCreationDate?: boolean;
 };
 
-const PostList = ({ posts }: PostListProps) => {
+const PostList = ({ posts, showCreationDate }: PostListProps) => {
+  // Sort posts if sortByCreationTs is true
+  if (showCreationDate) {
+    posts = [...posts].sort((a, b) => b.creationTs - a.creationTs);
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
         data={posts}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id} // Use a unique identifier if available
         numColumns={2}
-        key={2} // Ensure a static key for consistent rendering
-        renderItem={({ item }) => <PostCard post={item} />} // Use PostCard component
+        renderItem={({ item }) => (
+          <PostCard post={item} showCreationDate={showCreationDate} />
+        )}
       />
     </View>
   );

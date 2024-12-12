@@ -29,7 +29,7 @@ const OwnPosts = () => {
     fetchAccessTokenAndPosts();
   }, []); // Add dependencies if needed
 
-  return <PostList posts={posts} />;
+  return <PostList posts={posts} showCreationDate />;
 };
 
 const styles = StyleSheet.create({
