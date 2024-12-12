@@ -6,7 +6,8 @@ import { hp, wp } from "@/lib/common";
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Recommendation from "./recommendation";
+import Recommendation from "../components/Recommendation";
+import OwnPosts from "@/components/OwnPosts";
 
 const Profile = () => {
   const router = useRouter();
@@ -15,8 +16,8 @@ const Profile = () => {
     <ScreenWrapper>
       <View style={styles.container}>
         <SignOutButton router={router} />
-        <Text style={styles.title}>Trend</Text>
-        <Recommendation />
+        <Text style={styles.title}>Profile</Text>
+        <OwnPosts />
       </View>
       <TabBar router={router} />
     </ScreenWrapper>
