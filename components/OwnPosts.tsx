@@ -14,24 +14,31 @@ import {
 import { useAfterAuthContext } from "./globalContext";
 
 const OwnPosts = () => {
-  const [posts, setPosts] = React.useState<Post[]>();
+  const [posts, setPosts] = React.useState<Post[]>([]);
   const { createdPost } = useAfterAuthContext();
 
+  const fetchAccessTokenAndPosts = async () => {
+    try {
+      const accessToken = (await auth().currentUser?.getIdToken()) || "";
+      const posts = await getOwnPosts(accessToken);
+      setPosts(posts);
+    } catch (error) {
+      console.error("Error fetching access token or posts:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchAccessTokenAndPosts = async () => {
-      try {
-        const accessToken = (await auth().currentUser?.getIdToken()) || "";
-        const posts = await getOwnPosts(accessToken);
-        setPosts(posts);
-      } catch (error) {
-        console.error("Error fetching access token or posts:", error);
-      }
-    };
-
     fetchAccessTokenAndPosts();
-  }, [createdPost]); // Add dependencies if needed
+  }, [createdPost]); // Refresh when createdPost changes
 
-  return <PostList posts={posts} showCreationDate />;
+  // Function to trigger a refresh
+  const triggerRefresh = () => {
+    fetchAccessTokenAndPosts();
+  };
+
+  return (
+    <PostList posts={posts} showCreationDate triggerRefresh={triggerRefresh} />
+  );
 };
 
 const styles = StyleSheet.create({
