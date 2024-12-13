@@ -14,7 +14,7 @@ const SignOutButton: React.FC<SignOutButtonProps> = ({ size = 26, router }) => {
     try {
       await auth().signOut();
 
-      router.replace("/welcome");
+      // router.replace("/welcome");
     } catch (error: any) {
       console.error("Sign Out Error:", error);
       Alert.alert("Sign Out", "Sign Out was unsuccessful");
