@@ -122,3 +122,48 @@ export async function getBatchPost(request: GetBatchPostRequest) {
 
   return posts;
 }
+
+export async function getOwnPosts(accessToken: string): Promise<Post[]> {
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/getOwnPosts`;
+
+  console.log("calling " + url);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "*/*", // Match the accept header from the curl command
+      accessToken: accessToken,
+    },
+  });
+
+  if (!response.ok) {
+    // If the response status is not OK, throw an error
+    const errorText = await response.text();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${errorText}`
+    );
+  }
+
+  const data = await response.json();
+  const authorIds: string[] = Array.from(
+    new Set(data.posts.map((post) => post.authorId))
+  ); // get deduped authorId
+
+  const users: User[] = await getBatchUser({
+    accessToken: accessToken,
+    userIds: authorIds,
+  });
+
+  const userIdMap = users.reduce((map, user) => {
+    map[user.uid] = user;
+    return map;
+  }, {} as Record<string, User>);
+
+  const posts: Post[] = data.posts.map((post) => ({
+    ...post, // Copy all fields from the original post
+    author: userIdMap[post.authorId], // Override the author field
+  }));
+
+  return posts;
+}

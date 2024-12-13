@@ -1,23 +1,36 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { format } from "date-fns"; // Import the format function from date-fns
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
 import { Post } from "@/model/post";
 
 interface PostCardProps {
   post: Post;
+  showCreationDate?: boolean;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
+  // Format the creationTs to the desired format
+  const formattedDate = post.creationTs
+    ? format(new Date(post.creationTs), "MMM d, yyyy")
+    : "null";
+
   return (
     <View style={styles.postContainer}>
       <View style={styles.imagePlaceholder} />
       <Text style={[styles.textPadding, styles.postSubject]}>
         {post.content}
       </Text>
-      <Text style={[styles.textPadding, styles.postAuthor]}>
-        {post.author?.username || "null"}
-      </Text>
+      {!showCreationDate ? (
+        <Text style={[styles.textPadding, styles.postAuthor]}>
+          {post.author?.username || "null"}
+        </Text>
+      ) : (
+        <Text style={[styles.textPadding, styles.creationDate]}>
+          {formattedDate}
+        </Text>
+      )}
     </View>
   );
 };
@@ -27,7 +40,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: hp(0.5),
     marginHorizontal: wp(0.5),
-    backgroundColor: "#f9fcff", // Very light blue color
+    backgroundColor: "#f9fcff",
     borderRadius: wp(3),
     alignItems: "flex-start",
     shadowColor: "#000",
@@ -35,25 +48,38 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 3,
-    overflow: "hidden", // Ensure children do not overflow the border radius
-    height: hp(27),
+    overflow: "hidden",
+    height: hp(30), // Increase height if needed
   },
   textPadding: {
-    paddingHorizontal: wp(3), // Common horizontal padding for all text
-    paddingVertical: hp(0.5), // Common vertical padding for all text
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(0.5),
   },
   postSubject: {
     fontSize: hp(1.5),
     color: theme.light.text,
+    flexWrap: "wrap",
   },
   imagePlaceholder: {
-    width: "100%", // Make the image take up the full width of the card
-    height: "80%", // Adjust the height as needed
+    width: "100%",
+    height: "70%", // Adjust height to allow more space for text
     backgroundColor: theme.light.icon,
+  },
+  textContainer: {
+    flexDirection: "column", // Stack text elements vertically
+    alignItems: "flex-start",
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(0.5),
   },
   postAuthor: {
     fontSize: hp(1),
     color: theme.light.icon,
+    marginBottom: hp(0.5), // Add margin to separate from creation date
+  },
+  creationDate: {
+    fontSize: hp(1),
+    color: theme.light.icon,
+    fontStyle: "italic",
   },
 });
 

@@ -7,23 +7,24 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Recommendation from "../components/Recommendation";
+import OwnPosts from "@/components/OwnPosts";
 
-const Home = () => {
+const Profile = () => {
   const router = useRouter();
 
   return (
     <ScreenWrapper>
       <View style={styles.container}>
         <SignOutButton router={router} />
-        <Text style={styles.title}>Trend</Text>
-        <Recommendation />
+        <Text style={styles.title}>Profile</Text>
+        <OwnPosts />
       </View>
       <TabBar router={router} />
     </ScreenWrapper>
   );
 };
 
-export default Home;
+export default Profile;
 
 const styles = StyleSheet.create({
   container: {
