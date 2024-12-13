@@ -76,6 +76,10 @@ export async function getRecommendationPostIdsForUser(
 }
 
 export async function getBatchPost(request: GetBatchPostRequest) {
+  if (request.postIds.length === 0) {
+    return [];
+  }
+
   const queryParams = request.postIds
     .map((id) => `postIds=${encodeURIComponent(id)}`)
     .join("&");
@@ -146,6 +150,12 @@ export async function getOwnPosts(accessToken: string): Promise<Post[]> {
   }
 
   const data = await response.json();
+
+  if (!data.posts || data.posts.length === 0) {
+    console.log("post is empty");
+    return [];
+  }
+
   const authorIds: string[] = Array.from(
     new Set(data.posts.map((post) => post.authorId))
   ); // get deduped authorId

@@ -7,19 +7,19 @@ import { Post } from "@/model/post";
 import LoadingPostCard from "./LoadingPostCard";
 
 type PostListProps = {
-  posts: Post[];
+  posts?: Post[];
   showCreationDate?: boolean;
 };
 
 const PostList = ({ posts, showCreationDate }: PostListProps) => {
   // Sort posts if showCreationDate is true
-  const sortedPosts = showCreationDate
-    ? [...posts].sort((a, b) => b.creationTs - a.creationTs)
-    : posts;
+  // const sortedPosts = showCreationDate
+  //   ? [...posts].sort((a, b) => b.creationTs - a.creationTs)
+  //   : posts;
 
   return (
     <View style={styles.container}>
-      {sortedPosts.length === 0 ? (
+      {!posts ? (
         // Show loading cards when there are no posts
         <FlatList
           data={[...Array(20).keys()]} // Create an array to render multiple loading cards
@@ -27,10 +27,12 @@ const PostList = ({ posts, showCreationDate }: PostListProps) => {
           numColumns={2}
           renderItem={() => <LoadingPostCard />}
         />
+      ) : posts.length === 0 ? (
+        <Text>empty</Text>
       ) : (
         // Show real posts when available
         <FlatList
-          data={sortedPosts}
+          data={posts}
           keyExtractor={(item) => item.id} // Use a unique identifier if available
           numColumns={2}
           renderItem={({ item }) => (
