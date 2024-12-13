@@ -1,12 +1,10 @@
 import ScreenWrapper from "@/components/ScreenWrapper";
 import SignOutButton from "@/components/SignOutButton";
-import TabBar from "@/components/TabBar";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Recommendation from "../components/Recommendation";
 import OwnPosts from "@/components/OwnPosts";
 
 const Profile = () => {
@@ -19,7 +17,6 @@ const Profile = () => {
         <Text style={styles.title}>Profile</Text>
         <OwnPosts />
       </View>
-      <TabBar router={router} />
     </ScreenWrapper>
   );
 };

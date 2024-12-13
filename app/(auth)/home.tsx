@@ -1,6 +1,5 @@
 import ScreenWrapper from "@/components/ScreenWrapper";
 import SignOutButton from "@/components/SignOutButton";
-import TabBar from "@/components/TabBar";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
 import { useRouter } from "expo-router";
@@ -18,7 +17,6 @@ const Home = () => {
         <Text style={styles.title}>Trend</Text>
         <Recommendation />
       </View>
-      <TabBar router={router} />
     </ScreenWrapper>
   );
 };

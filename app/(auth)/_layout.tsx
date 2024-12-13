@@ -1,7 +1,9 @@
+import React from "react";
 import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import { Pressable } from "react-native";
 import useAuth, { signOutUser } from "@/lib/auth";
+import { theme } from "@/constants/theme";
+import Icon from "@/assets/icons";
 
 export const LogoutButton = () => {
   const doLogout = () => {
@@ -10,7 +12,7 @@ export const LogoutButton = () => {
 
   return (
     <Pressable onPress={doLogout} style={{ marginRight: 10 }}>
-      <Ionicons name="log-out-outline" size={24} color={"#fff"} />
+      <Icon name="log-out" size={24} color={"#fff"} />
     </Pressable>
   );
 };
@@ -19,22 +21,27 @@ const TabsPage = () => {
   const { isSignedIn } = useAuth();
 
   return (
-    <Tabs
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "#6c47ff",
-        },
-        headerTintColor: "#fff",
-      }}
-    >
+    <Tabs screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
       <Tabs.Screen
         name="home"
         options={{
-          headerTitle: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+            <Icon name="home" size={size} color={color} strokeWidth={2.5} />
           ),
-          tabBarLabel: "Home",
+        }}
+        redirect={!isSignedIn}
+      />
+      <Tabs.Screen
+        name="post"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon
+              name="addSquare"
+              size={size}
+              color={color}
+              strokeWidth={2.5}
+            />
+          ),
         }}
         redirect={!isSignedIn}
       />
@@ -43,10 +50,8 @@ const TabsPage = () => {
         options={{
           headerTitle: "My Profile",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
+            <Icon name="profile" size={size} color={color} strokeWidth={2.5} />
           ),
-          tabBarLabel: "My Profile",
-          headerRight: () => <LogoutButton />,
         }}
         redirect={!isSignedIn}
       />
