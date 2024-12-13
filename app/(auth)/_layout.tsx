@@ -4,6 +4,7 @@ import { Pressable } from "react-native";
 import useAuth, { signOutUser } from "@/lib/auth";
 import { theme } from "@/constants/theme";
 import Icon from "@/assets/icons";
+import ContextAfterAuth from "@/components/globalContext";
 
 export const LogoutButton = () => {
   const doLogout = () => {
@@ -21,41 +22,48 @@ const TabsPage = () => {
   const { isSignedIn } = useAuth();
 
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
-      <Tabs.Screen
-        name="home"
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home" size={size} color={color} strokeWidth={2.5} />
-          ),
-        }}
-        redirect={!isSignedIn}
-      />
-      <Tabs.Screen
-        name="post"
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon
-              name="addSquare"
-              size={size}
-              color={color}
-              strokeWidth={2.5}
-            />
-          ),
-        }}
-        redirect={!isSignedIn}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          headerTitle: "My Profile",
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="profile" size={size} color={color} strokeWidth={2.5} />
-          ),
-        }}
-        redirect={!isSignedIn}
-      />
-    </Tabs>
+    <ContextAfterAuth>
+      <Tabs screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
+        <Tabs.Screen
+          name="home"
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="home" size={size} color={color} strokeWidth={2.5} />
+            ),
+          }}
+          redirect={!isSignedIn}
+        />
+        <Tabs.Screen
+          name="post"
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon
+                name="addSquare"
+                size={size}
+                color={color}
+                strokeWidth={2.5}
+              />
+            ),
+          }}
+          redirect={!isSignedIn}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            headerTitle: "My Profile",
+            tabBarIcon: ({ color, size }) => (
+              <Icon
+                name="profile"
+                size={size}
+                color={color}
+                strokeWidth={2.5}
+              />
+            ),
+          }}
+          redirect={!isSignedIn}
+        />
+      </Tabs>
+    </ContextAfterAuth>
   );
 };
 

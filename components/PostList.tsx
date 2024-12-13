@@ -9,13 +9,26 @@ import LoadingPostCard from "./LoadingPostCard";
 type PostListProps = {
   posts?: Post[];
   showCreationDate?: boolean;
+  triggerRefresh: () => void;
 };
 
-const PostList = ({ posts, showCreationDate }: PostListProps) => {
+const PostList = ({
+  posts,
+  showCreationDate,
+  triggerRefresh,
+}: PostListProps) => {
   // Sort posts if showCreationDate is true
   // const sortedPosts = showCreationDate
   //   ? [...posts].sort((a, b) => b.creationTs - a.creationTs)
   //   : posts;
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await triggerRefresh(); // Call the refresh function passed from the parent
+    setRefreshing(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -38,6 +51,8 @@ const PostList = ({ posts, showCreationDate }: PostListProps) => {
           renderItem={({ item }) => (
             <PostCard post={item} showCreationDate={showCreationDate} />
           )}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
         />
       )}
     </View>
