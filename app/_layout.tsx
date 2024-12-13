@@ -26,7 +26,7 @@ const InitialLayout = () => {
     } else if (!isSignedIn) {
       router.replace("/welcome");
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, isLoading]);
 
   return <Slot />;
 };
