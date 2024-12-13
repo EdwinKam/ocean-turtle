@@ -14,7 +14,7 @@ import {
 import { useAfterAuthContext } from "./globalContext";
 
 const OwnPosts = () => {
-  const [posts, setPosts] = React.useState<Post[]>([]);
+  const [posts, setPosts] = React.useState<Post[]>();
   const { createdPost } = useAfterAuthContext();
 
   const fetchAccessTokenAndPosts = async () => {

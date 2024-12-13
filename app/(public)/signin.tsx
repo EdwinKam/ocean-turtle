@@ -5,7 +5,11 @@ import Input from "@/components/Input";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
-import { authWithGoogle } from "@/lib/authService";
+import {
+  authWithGoogle,
+  isAccessTokenValid,
+  verifyToken,
+} from "@/lib/authService";
 import auth from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -16,7 +20,8 @@ const SignIn = () => {
   const router = useRouter();
   const emailRef = useRef("");
   const passwordRef = useRef("");
-  const [loading, setLoading] = useState(false);
+  const [loadingEmail, setLoadingEmail] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
 
   const onSubmit = async () => {
     if (!emailRef.current || !passwordRef.current) {
@@ -25,12 +30,16 @@ const SignIn = () => {
     }
 
     try {
-      setLoading(true);
+      setLoadingEmail(true);
 
       await auth().signInWithEmailAndPassword(
         emailRef.current,
         passwordRef.current
       );
+      const isTokenValid = await isAccessTokenValid(await auth().currentUser!);
+      if (!isTokenValid) {
+        throw new Error("could not verify token");
+      }
     } catch (error: any) {
       console.error(error);
 
@@ -39,18 +48,23 @@ const SignIn = () => {
         Alert.alert("Sign In", "Email and password do not match");
       }
     } finally {
-      setLoading(false);
+      setLoadingEmail(false);
     }
   };
 
   const signInWithGoogle = async () => {
+    setLoadingGoogle(false);
     try {
       await authWithGoogle();
+      const isTokenValid = await isAccessTokenValid(await auth().currentUser!);
+      if (!isTokenValid) {
+        throw new Error("could not verify token");
+      }
     } catch (error: any) {
       console.error("Google Sign-In Error:", error);
       Alert.alert("Sign Up", "Google Sign In was unsuccessful");
     } finally {
-      setLoading(false);
+      setLoadingGoogle(false);
     }
   };
 
@@ -89,7 +103,7 @@ const SignIn = () => {
           <Text style={styles.forgotPassword}>Forget Password?</Text>
           <Button
             title={"Sign In"}
-            loading={loading}
+            loading={loadingEmail}
             onPress={onSubmit}
             buttonStyle={undefined}
             textStyle={undefined}
@@ -97,7 +111,7 @@ const SignIn = () => {
           />
           <Button
             title="Sign In with Google"
-            loading={undefined}
+            loading={loadingGoogle}
             onPress={signInWithGoogle}
             buttonStyle={styles.googleButton}
             textStyle={styles.googleButtonText}

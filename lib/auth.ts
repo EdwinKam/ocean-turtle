@@ -1,7 +1,7 @@
 import auth from "@react-native-firebase/auth"; // Firebase Authentication
 
 import { useState, useEffect } from "react";
-import { verifyToken } from "@/lib/authService";
+import { isAccessTokenValid, verifyToken } from "@/lib/authService";
 import { Alert } from "react-native";
 
 const useAuth = () => {
@@ -11,23 +11,8 @@ const useAuth = () => {
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(async (user) => {
       if (user) {
-        try {
-          const firebaseToken = await user.getIdToken();
-          console.log("This is the access token:", firebaseToken);
-
-          const responseData = await verifyToken(firebaseToken);
-
-          if (!responseData?.validToken) {
-            throw new Error("Invalid token");
-          }
-
-          console.log("User signed in!");
-          setIsSignedIn(true);
-        } catch (error) {
-          Alert.alert("Authentication", "Operation was unsuccessful");
-          setIsSignedIn(false);
-          await auth().signOut();
-        }
+        const isTokenValid = await isAccessTokenValid(user);
+        setIsSignedIn(isTokenValid);
       } else {
         setIsSignedIn(false);
       }
