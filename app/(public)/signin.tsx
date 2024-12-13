@@ -5,7 +5,11 @@ import Input from "@/components/Input";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
-import { authWithGoogle } from "@/lib/authService";
+import {
+  authWithGoogle,
+  isAccessTokenValid,
+  verifyToken,
+} from "@/lib/authService";
 import auth from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -46,6 +50,10 @@ const SignIn = () => {
   const signInWithGoogle = async () => {
     try {
       await authWithGoogle();
+      const isTokenValid = await isAccessTokenValid(await auth().currentUser!);
+      if (!isTokenValid) {
+        throw new Error("could not verify token");
+      }
     } catch (error: any) {
       console.error("Google Sign-In Error:", error);
       Alert.alert("Sign Up", "Google Sign In was unsuccessful");

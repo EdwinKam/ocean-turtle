@@ -5,7 +5,7 @@ import Input from "@/components/Input";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
-import { authWithGoogle } from "@/lib/authService";
+import { authWithGoogle, isAccessTokenValid } from "@/lib/authService";
 import auth from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -17,7 +17,8 @@ const SignUp = () => {
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const confirmRef = useRef("");
-  const [loading, setLoading] = useState(false);
+  const [loadingEmail, setLoadingEmail] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
 
   const onSubmit = async () => {
     if (!emailRef.current || !passwordRef.current || !confirmRef.current) {
@@ -33,7 +34,7 @@ const SignUp = () => {
     }
 
     try {
-      setLoading(true);
+      setLoadingEmail(true);
 
       await auth().createUserWithEmailAndPassword(
         emailRef.current,
@@ -52,18 +53,23 @@ const SignUp = () => {
         Alert.alert("Sign In", "Email is invalid");
       }
     } finally {
-      setLoading(false);
+      setLoadingEmail(false);
     }
   };
 
   const signInWithGoogle = async () => {
+    setLoadingGoogle(true);
     try {
       await authWithGoogle();
+      const isTokenValid = await isAccessTokenValid(await auth().currentUser!);
+      if (!isTokenValid) {
+        throw new Error("could not verify token");
+      }
     } catch (error: any) {
       console.error("Google Sign-In Error:", error);
       Alert.alert("Sign Up", "Google Sign Up was unsuccessful");
     } finally {
-      setLoading(false);
+      setLoadingGoogle(false);
     }
   };
 
@@ -109,14 +115,14 @@ const SignUp = () => {
           />
           <Button
             title={"Sign Up"}
-            loading={loading}
+            loading={loadingEmail}
             onPress={onSubmit}
             buttonStyle={undefined}
             textStyle={undefined}
           />
           <Button
             title="Sign Up with Google"
-            loading={undefined}
+            loading={loadingGoogle}
             onPress={signInWithGoogle}
             buttonStyle={styles.googleButton}
             textStyle={styles.googleButtonText}

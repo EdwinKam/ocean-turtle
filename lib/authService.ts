@@ -1,4 +1,4 @@
-import auth from "@react-native-firebase/auth";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 GoogleSignin.configure({
@@ -17,6 +17,25 @@ export const authWithGoogle = async () => {
 
   const googleCredential = auth.GoogleAuthProvider.credential(token);
   return await auth().signInWithCredential(googleCredential);
+};
+
+export const isAccessTokenValid = async (user: FirebaseAuthTypes.User) => {
+  try {
+    console.log("checking token with backend");
+    const firebaseToken = await user.getIdToken();
+    console.log("This is the access token:", firebaseToken);
+
+    const responseData = await verifyToken(firebaseToken);
+
+    if (!responseData?.validToken) {
+      throw new Error("Invalid token");
+    }
+
+    console.log("User signed in!");
+    return true;
+  } catch (error) {
+    return false;
+  }
 };
 
 export const verifyToken = async (firebaseToken: string) => {

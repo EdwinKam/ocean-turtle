@@ -1,7 +1,7 @@
-import Loading from '@/components/Loading';
-import { theme } from '@/constants/theme';
-import { hp } from '@/lib/common';
-import React from 'react';
+import Loading from "@/components/Loading";
+import { theme } from "@/constants/theme";
+import { hp } from "@/lib/common";
+import React from "react";
 import {
   Pressable,
   StyleProp,
@@ -10,7 +10,7 @@ import {
   TextStyle,
   View,
   ViewStyle,
-} from 'react-native';
+} from "react-native";
 
 type ButtonProps = {
   buttonStyle?: StyleProp<ViewStyle>;
@@ -25,7 +25,7 @@ type ButtonProps = {
 const Button: React.FC<ButtonProps> = ({
   buttonStyle = {},
   textStyle = {},
-  title = '',
+  title = "",
   onPress = () => {},
   loading = false,
   hasShadow = true,
@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: theme.light.tint,
     height: hp(6.6),
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderCurve: 'continuous',
+    justifyContent: "center",
+    alignItems: "center",
+    borderCurve: "continuous",
     borderRadius: theme.radius.xl,
   },
 
@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
 
   icon: {
