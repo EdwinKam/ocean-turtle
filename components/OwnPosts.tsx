@@ -11,9 +11,11 @@ import {
   getOwnPosts,
   getRecommendationPostIdsForUser,
 } from "@/lib/postService";
+import { useAfterAuthContext } from "./globalContext";
 
 const OwnPosts = () => {
   const [posts, setPosts] = React.useState<Post[]>();
+  const { createdPost } = useAfterAuthContext();
 
   useEffect(() => {
     const fetchAccessTokenAndPosts = async () => {
@@ -27,7 +29,7 @@ const OwnPosts = () => {
     };
 
     fetchAccessTokenAndPosts();
-  }, []); // Add dependencies if needed
+  }, [createdPost]); // Add dependencies if needed
 
   return <PostList posts={posts} showCreationDate />;
 };
