@@ -13,7 +13,7 @@ import {
 } from "@/lib/postService";
 
 const OwnPosts = () => {
-  const [posts, setPosts] = React.useState<Post[]>([]);
+  const [posts, setPosts] = React.useState<Post[]>();
 
   useEffect(() => {
     const fetchAccessTokenAndPosts = async () => {
