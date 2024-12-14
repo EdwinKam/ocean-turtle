@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { format } from "date-fns"; // Import the format function from date-fns
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
@@ -25,8 +25,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
 
   return (
     <TouchableOpacity onPress={handlePress} style={styles.postContainer}>
-      <View>
-        <View style={styles.imagePlaceholder} />
+      <View style={{ height: "100%", width: "100%" }}>
+        <View style={styles.imagePlaceholder}>
+          <Image
+            source={{
+              uri: "https://64.media.tumblr.com/b4f649d5fd4e5e8c2ae3bd66a5783016/18ce8e60dacba0b7-c5/s1280x1920/18278335098dbe59b5d5db9f8af65fb7789efbb0.jpg",
+            }}
+            style={{ height: "100%", width: "100%" }} // Apply the style here
+          />
+        </View>
         <Text style={[styles.textPadding, styles.postSubject]}>
           {post.content}
         </Text>
@@ -72,7 +79,7 @@ const styles = StyleSheet.create({
   imagePlaceholder: {
     width: "100%",
     height: "70%", // Adjust height to allow more space for text
-    backgroundColor: theme.light.icon,
+    backgroundColor: "blue",
   },
   textContainer: {
     flexDirection: "column", // Stack text elements vertically
