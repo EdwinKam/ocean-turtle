@@ -1,9 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { format } from "date-fns"; // Import the format function from date-fns
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
 import { Post } from "@/model/post";
+import { useRouter } from "expo-router";
 
 interface PostCardProps {
   post: Post;
@@ -11,27 +12,35 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
+  const router = useRouter();
+
   // Format the creationTs to the desired format
   const formattedDate = post.creationTs
     ? format(new Date(post.creationTs), "MMM d, yyyy")
     : "null";
 
+  const handlePress = () => {
+    router.push(`/viewpost/${post.id}`); // Navigate to the /post route
+  };
+
   return (
-    <View style={styles.postContainer}>
-      <View style={styles.imagePlaceholder} />
-      <Text style={[styles.textPadding, styles.postSubject]}>
-        {post.content}
-      </Text>
-      {!showCreationDate ? (
-        <Text style={[styles.textPadding, styles.postAuthor]}>
-          {post.author?.username || "null"}
+    <TouchableOpacity onPress={handlePress} style={styles.postContainer}>
+      <View>
+        <View style={styles.imagePlaceholder} />
+        <Text style={[styles.textPadding, styles.postSubject]}>
+          {post.content}
         </Text>
-      ) : (
-        <Text style={[styles.textPadding, styles.creationDate]}>
-          {formattedDate}
-        </Text>
-      )}
-    </View>
+        {!showCreationDate ? (
+          <Text style={[styles.textPadding, styles.postAuthor]}>
+            {post.author?.username || "null"}
+          </Text>
+        ) : (
+          <Text style={[styles.textPadding, styles.creationDate]}>
+            {formattedDate}
+          </Text>
+        )}
+      </View>
+    </TouchableOpacity>
   );
 };
 
