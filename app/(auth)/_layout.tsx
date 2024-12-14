@@ -9,7 +9,7 @@ const AfterAuthLayout = () => {
   return (
     <Stack
       screenOptions={{
-        headerShown: true, // Show the header to use the back button
+        headerShown: false,
       }}
     >
       {/* Define your screens here */}
