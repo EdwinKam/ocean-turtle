@@ -21,7 +21,7 @@ const OwnPosts = () => {
     try {
       const accessToken = (await auth().currentUser?.getIdToken()) || "";
       const posts = await getOwnPosts(accessToken);
-      setPosts(posts);
+      setPosts([...posts].sort((a, b) => b.creationTs - a.creationTs));
     } catch (error) {
       console.error("Error fetching access token or posts:", error);
     }

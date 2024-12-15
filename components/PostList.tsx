@@ -17,11 +17,6 @@ const PostList = ({
   showCreationDate,
   triggerRefresh,
 }: PostListProps) => {
-  // Sort posts if showCreationDate is true
-  // const sortedPosts = showCreationDate
-  //   ? [...posts].sort((a, b) => b.creationTs - a.creationTs)
-  //   : posts;
-
   const [refreshing, setRefreshing] = React.useState(false);
 
   const handleRefresh = async () => {
