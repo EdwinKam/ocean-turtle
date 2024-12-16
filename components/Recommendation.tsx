@@ -15,24 +15,27 @@ const Recommendation = () => {
   const [postIds, setPostIds] = React.useState<string[]>([]);
   const [posts, setPosts] = React.useState<Post[]>();
 
+  const fetchAccessTokenAndPosts = async () => {
+    try {
+      const accessToken = (await auth().currentUser?.getIdToken()) || "";
+      const postIds = await getRecommendationPostIdsForUser({ accessToken });
+      setPostIds(postIds);
+
+      const posts = await getBatchPost({ accessToken, postIds });
+      console.log(posts);
+      setPosts(posts);
+    } catch (error) {
+      console.error("Error fetching access token or posts:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchAccessTokenAndPosts = async () => {
-      try {
-        const accessToken = (await auth().currentUser?.getIdToken()) || "";
-        const postIds = await getRecommendationPostIdsForUser({ accessToken });
-        setPostIds(postIds);
-
-        const posts = await getBatchPost({ accessToken, postIds });
-        setPosts(posts);
-      } catch (error) {
-        console.error("Error fetching access token or posts:", error);
-      }
-    };
-
     fetchAccessTokenAndPosts();
   }, []); // Add dependencies if needed
 
-  return <PostList posts={posts} />;
+  return (
+    <PostList posts={posts} triggerRefresh={() => fetchAccessTokenAndPosts()} />
+  );
 };
 
 const styles = StyleSheet.create({
