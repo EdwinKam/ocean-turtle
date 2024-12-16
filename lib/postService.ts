@@ -120,8 +120,8 @@ export async function getBatchPost(request: GetBatchPostRequest) {
   }, {} as Record<string, User>);
 
   const posts: Post[] = data.posts.map((post) => ({
+    ...post,
     author: userIdMap[post.authorId],
-    content: post.content,
   }));
 
   return posts;

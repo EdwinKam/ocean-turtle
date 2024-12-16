@@ -1,70 +1,20 @@
+import Button from "@/components/Button";
+import { Stack } from "expo-router";
 import React from "react";
-import { Tabs } from "expo-router";
-import { Pressable } from "react-native";
-import useAuth, { signOutUser } from "@/lib/auth";
-import { theme } from "@/constants/theme";
-import Icon from "@/assets/icons";
-import ContextAfterAuth from "@/components/globalContext";
+import { useNavigation } from "@react-navigation/native";
 
-export const LogoutButton = () => {
-  const doLogout = () => {
-    signOutUser();
-  };
+const AfterAuthLayout = () => {
+  const navigation = useNavigation();
 
   return (
-    <Pressable onPress={doLogout} style={{ marginRight: 10 }}>
-      <Icon name="log-out" size={24} color={"#fff"} />
-    </Pressable>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      {/* Define your screens here */}
+    </Stack>
   );
 };
 
-const TabsPage = () => {
-  const { isSignedIn } = useAuth();
-
-  return (
-    <ContextAfterAuth>
-      <Tabs screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
-        <Tabs.Screen
-          name="home"
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="home" size={size} color={color} strokeWidth={2.5} />
-            ),
-          }}
-          redirect={!isSignedIn}
-        />
-        <Tabs.Screen
-          name="post"
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Icon
-                name="addSquare"
-                size={size}
-                color={color}
-                strokeWidth={2.5}
-              />
-            ),
-          }}
-          redirect={!isSignedIn}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            headerTitle: "My Profile",
-            tabBarIcon: ({ color, size }) => (
-              <Icon
-                name="profile"
-                size={size}
-                color={color}
-                strokeWidth={2.5}
-              />
-            ),
-          }}
-          redirect={!isSignedIn}
-        />
-      </Tabs>
-    </ContextAfterAuth>
-  );
-};
-
-export default TabsPage;
+export default AfterAuthLayout;

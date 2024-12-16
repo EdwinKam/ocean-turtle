@@ -8,6 +8,8 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 2. Download [`.env.local`](https://drive.google.com/file/d/1uoBdR9y-Gi_WiQsqx7LVsHsgt3uEq2Tf/view?usp=drive_link) and place it inside project root directoy. Make sure you name it `.env.local`
 
+3. install node 20.0.0, run `nvm use` to use that version
+
 ## iOS
 
 1. Install [Xcode](https://apps.apple.com/us/app/xcode/id497799835).
