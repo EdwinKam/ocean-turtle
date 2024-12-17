@@ -1,10 +1,20 @@
 import React, { useEffect } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  FlatList,
+  Dimensions,
+} from "react-native";
 import BackButton from "@/components/BackButton";
 import { Post } from "@/model/post";
 import { readPost } from "@/lib/postService";
 import auth from "@react-native-firebase/auth";
+import ViewImagePostPage from "@/components/ViewImagePostPage";
+
+const { width: screenWidth } = Dimensions.get("window");
 
 const ViewPost = () => {
   const router = useRouter();
@@ -21,14 +31,17 @@ const ViewPost = () => {
     enrichPost();
   }, []);
 
+  // Dummy comments data
+  const comments = [
+    { id: "1", username: "user1", comment: "Nice post!" },
+    { id: "2", username: "user2", comment: "Love this!" },
+    { id: "3", username: "user3", comment: "Amazing content!" },
+  ];
+
   return (
     <View style={styles.container}>
       <BackButton router={router} />
-      <View style={styles.textContainer}>
-        <Text style={styles.text}>Post ID: {post?.id}</Text>
-        <Text style={styles.text}>Author name {post?.author.username}</Text>
-        <Text style={styles.text}>content {post?.content}</Text>
-      </View>
+      <ViewImagePostPage post={post!} comments={comments} />
     </View>
   );
 };
@@ -36,30 +49,33 @@ const ViewPost = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center", // Center content vertically
-    alignItems: "center", // Center content horizontally
-    paddingTop: 50, // Add padding to avoid overlap with the back button
+    paddingTop: 50,
   },
-  backButton: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    padding: 10,
-    backgroundColor: "#ddd",
-    borderRadius: 5,
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: "#000",
-  },
-  textContainer: {
-    flex: 1,
-    justifyContent: "center",
+  postContainer: {
     alignItems: "center",
+    margin: 20,
   },
-  text: {
-    fontSize: 24,
-    textAlign: "center",
+  authorName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  image: {
+    width: screenWidth,
+    height: screenWidth, // Assuming a square image for simplicity
+    marginBottom: 10,
+  },
+  commentContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 5,
+  },
+  commentUsername: {
+    fontWeight: "bold",
+    marginRight: 5,
+  },
+  commentText: {
+    fontSize: 16,
   },
 });
 
