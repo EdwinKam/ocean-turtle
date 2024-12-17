@@ -105,24 +105,22 @@ export async function getBatchPost(request: GetBatchPostRequest) {
   }
 
   const data = await response.json();
+  console.log(data.posts);
   const authorIds: string[] = Array.from(
     new Set(data.posts.map((post) => post.authorId))
   ); // get deduped authorId
 
-  const users: User[] = await getBatchUser({
+  const userMap: Record<string, User> = await getBatchUser({
     accessToken: request.accessToken,
     userIds: authorIds,
   });
 
-  const userIdMap = users.reduce((map, user) => {
-    map[user.uid] = user;
-    return map;
-  }, {} as Record<string, User>);
-
-  const posts: Post[] = data.posts.map((post) => ({
-    ...post,
-    author: userIdMap[post.authorId],
-  }));
+  const posts: Post[] = data.posts
+    .filter((post) => userMap[post.authorId] !== undefined) // Filter out posts with undefined authors
+    .map((post) => ({
+      ...post,
+      author: userMap[post.authorId],
+    }));
 
   return posts;
 }
@@ -160,20 +158,74 @@ export async function getOwnPosts(accessToken: string): Promise<Post[]> {
     new Set(data.posts.map((post) => post.authorId))
   ); // get deduped authorId
 
-  const users: User[] = await getBatchUser({
+  const userMap: Record<string, User> = await getBatchUser({
     accessToken: accessToken,
     userIds: authorIds,
   });
 
-  const userIdMap = users.reduce((map, user) => {
-    map[user.uid] = user;
-    return map;
-  }, {} as Record<string, User>);
-
-  const posts: Post[] = data.posts.map((post) => ({
-    ...post, // Copy all fields from the original post
-    author: userIdMap[post.authorId], // Override the author field
-  }));
+  const posts: Post[] = data.posts
+    .filter((post) => userMap[post.authorId] !== undefined) // Filter out posts with undefined authors
+    .map((post) => ({
+      ...post,
+      author: userMap[post.authorId],
+    }));
 
   return posts;
+}
+
+export async function readPost(
+  accessToken: string,
+  postId: string
+): Promise<Post> {
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/readPost?postId=${postId}`;
+
+  console.log("calling " + url);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "*/*",
+      accessToken: accessToken,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${errorText}`
+    );
+  }
+
+  const data = await response.json();
+
+  if (!data.post) {
+    throw new Error(`postId ${postId} returned null from backend`);
+  }
+
+  let author: User;
+
+  // If not in cache, fetch the author data
+  try {
+    const response = await getBatchUser({
+      accessToken: accessToken,
+      userIds: [data.post.authorId],
+    });
+
+    if (response[data.post.authorId] === undefined) {
+      throw new Error(`Author not found for postId ${postId}`);
+    } else {
+      author = response[data.post.authorId];
+    }
+  } catch (error) {
+    console.error(`Failed to fetch user with ID ${data.post.authorId}:`, error);
+    throw new Error(`Failed to fetch author details for postId ${postId}`);
+  }
+
+  const post: Post = {
+    ...data.post,
+    author: author,
+  };
+
+  return post;
 }

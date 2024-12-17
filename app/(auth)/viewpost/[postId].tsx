@@ -1,17 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import BackButton from "@/components/BackButton";
+import { Post } from "@/model/post";
+import { readPost } from "@/lib/postService";
+import auth from "@react-native-firebase/auth";
 
 const ViewPost = () => {
   const router = useRouter();
   const { postId } = useLocalSearchParams();
+  const [post, setPost] = React.useState<Post>();
+
+  const enrichPost = async () => {
+    const accessToken = (await auth().currentUser?.getIdToken()) || "";
+    const post = await readPost(accessToken, postId);
+    setPost(post);
+  };
+
+  useEffect(() => {
+    enrichPost();
+  }, []);
 
   return (
     <View style={styles.container}>
       <BackButton router={router} />
       <View style={styles.textContainer}>
-        <Text style={styles.text}>Post ID: {postId}</Text>
+        <Text style={styles.text}>Post ID: {post?.id}</Text>
+        <Text style={styles.text}>Author name {post?.author.username}</Text>
+        <Text style={styles.text}>content {post?.content}</Text>
       </View>
     </View>
   );
