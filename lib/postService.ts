@@ -105,24 +105,22 @@ export async function getBatchPost(request: GetBatchPostRequest) {
   }
 
   const data = await response.json();
+  console.log(data.posts);
   const authorIds: string[] = Array.from(
     new Set(data.posts.map((post) => post.authorId))
   ); // get deduped authorId
 
-  const users: User[] = await getBatchUser({
+  const userMap: Record<string, User> = await getBatchUser({
     accessToken: request.accessToken,
     userIds: authorIds,
   });
 
-  const userIdMap = users.reduce((map, user) => {
-    map[user.uid] = user;
-    return map;
-  }, {} as Record<string, User>);
-
-  const posts: Post[] = data.posts.map((post) => ({
-    ...post,
-    author: userIdMap[post.authorId],
-  }));
+  const posts: Post[] = data.posts
+    .filter((post) => userMap[post.authorId] !== undefined) // Filter out posts with undefined authors
+    .map((post) => ({
+      ...post,
+      author: userMap[post.authorId],
+    }));
 
   return posts;
 }
@@ -160,20 +158,17 @@ export async function getOwnPosts(accessToken: string): Promise<Post[]> {
     new Set(data.posts.map((post) => post.authorId))
   ); // get deduped authorId
 
-  const users: User[] = await getBatchUser({
+  const userMap: Record<string, User> = await getBatchUser({
     accessToken: accessToken,
     userIds: authorIds,
   });
 
-  const userIdMap = users.reduce((map, user) => {
-    map[user.uid] = user;
-    return map;
-  }, {} as Record<string, User>);
-
-  const posts: Post[] = data.posts.map((post) => ({
-    ...post, // Copy all fields from the original post
-    author: userIdMap[post.authorId], // Override the author field
-  }));
+  const posts: Post[] = data.posts
+    .filter((post) => userMap[post.authorId] !== undefined) // Filter out posts with undefined authors
+    .map((post) => ({
+      ...post,
+      author: userMap[post.authorId],
+    }));
 
   return posts;
 }
@@ -217,10 +212,10 @@ export async function readPost(
       userIds: [data.post.authorId],
     });
 
-    if (response.length != 1) {
+    if (response[data.post.authorId] === undefined) {
       throw new Error(`Author not found for postId ${postId}`);
     } else {
-      author = response[0];
+      author = response[data.post.authorId];
     }
   } catch (error) {
     console.error(`Failed to fetch user with ID ${data.post.authorId}:`, error);
