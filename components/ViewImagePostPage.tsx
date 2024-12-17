@@ -21,7 +21,7 @@ const ViewImagePostPage: React.FC<ViewImagePostPageProps> = ({
   comments,
 }) => {
   return (
-    <View style={styles.postContainer}>
+    <View style={styles.container}>
       <Text style={styles.authorName}>
         {post?.author.username || "Author Name"}
       </Text>
@@ -48,17 +48,15 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
   },
-  postContainer: {
-    alignItems: "center",
-    margin: 20,
-  },
   authorName: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+    textAlign: "left",
+    paddingHorizontal: 20, // Add padding to the text
   },
   image: {
-    width: screenWidth,
+    width: screenWidth, // Full width of the screen
     height: screenWidth, // Assuming a square image for simplicity
     marginBottom: 10,
   },
@@ -66,13 +64,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 5,
+    paddingHorizontal: 20, // Add padding to the comments
   },
   commentUsername: {
     fontWeight: "bold",
     marginRight: 5,
+    textAlign: "left",
   },
   commentText: {
     fontSize: 16,
+    textAlign: "left",
   },
 });
 
