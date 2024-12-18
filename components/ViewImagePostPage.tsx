@@ -8,18 +8,15 @@ import {
   Dimensions,
 } from "react-native";
 import { Post } from "@/model/post"; // Assuming Post is a TypeScript interface
+import PostCommentView from "./PostCommentView";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 interface ViewImagePostPageProps {
   post: Post;
-  comments: { id: string; username: string; comment: string }[];
 }
 
-const ViewImagePostPage: React.FC<ViewImagePostPageProps> = ({
-  post,
-  comments,
-}) => {
+const ViewImagePostPage: React.FC<ViewImagePostPageProps> = ({ post }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.authorName}>
@@ -29,16 +26,7 @@ const ViewImagePostPage: React.FC<ViewImagePostPageProps> = ({
         source={{ uri: post?.imageUrl || "https://via.placeholder.com/300" }}
         style={styles.image}
       />
-      <FlatList
-        data={comments}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.commentContainer}>
-            <Text style={styles.commentUsername}>{item.username}</Text>
-            <Text style={styles.commentText}>{item.comment}</Text>
-          </View>
-        )}
-      />
+      <PostCommentView post={post} />
     </View>
   );
 };

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   Dimensions,
+  SafeAreaView,
 } from "react-native";
 import BackButton from "@/components/BackButton";
 import { Post } from "@/model/post";
@@ -29,24 +30,22 @@ const ViewPost = () => {
 
   useEffect(() => {
     enrichPost();
-  }, []);
-
-  // Dummy comments data
-  const comments = [
-    { id: "1", username: "user1", comment: "Nice post!" },
-    { id: "2", username: "user2", comment: "Love this!" },
-    { id: "3", username: "user3", comment: "Amazing content!" },
-  ];
+  }, []); // Add dependencies if needed
 
   return (
-    <View style={styles.container}>
-      <BackButton router={router} />
-      <ViewImagePostPage post={post!} comments={comments} />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <BackButton router={router} />
+        <ViewImagePostPage post={post!} />
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     paddingTop: 50,
