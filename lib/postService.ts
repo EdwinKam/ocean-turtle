@@ -1,11 +1,13 @@
 import { Post } from "@/model/post";
 import {
+  AddCommentRequest,
   CreatePostRequest,
   GetBatchPostRequest,
   GetRecommendationPostRequest,
 } from "@/model/whaleRequests";
 import { getBatchUser } from "./userService";
 import User from "@/model/user";
+import { PostComment } from "@/model/postComment";
 
 export const createPost = async (request: CreatePostRequest) => {
   console.log(
@@ -229,3 +231,96 @@ export async function readPost(
 
   return post;
 }
+
+export async function getPostComments(
+  accessToken: string,
+  post: Post
+): Promise<PostComment[]> {
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/getComments?postId=${post.id}`;
+  console.log("calling " + url);
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "*/*",
+      accessToken: accessToken,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${errorText}`
+    );
+  }
+
+  const data = await response.json();
+
+  const commenterIds: string[] = Array.from(
+    new Set(data.postComments.map((comment) => comment.commenterUid))
+  ); // get deduped authorId
+
+  const userMap: Record<string, User> = await getBatchUser({
+    accessToken: accessToken,
+    userIds: commenterIds,
+  });
+
+  // Create a map to store comments by their ID
+  const commentMap: { [key: string]: PostComment } = {};
+
+  // First pass: create Comment objects and store them in the map
+  data.postComments.forEach((commentData: any) => {
+    commentMap[commentData.commentId] = {
+      commenter: userMap[commentData.commenterUid],
+      post: post,
+      content: commentData.content,
+      childComments: [],
+    };
+  });
+
+  // Second pass: link child comments to their parents
+  const rootComments: PostComment[] = [];
+  data.postComments.forEach((commentData: any) => {
+    const comment: PostComment = commentMap[commentData.commentId];
+    if (commentData.parentCommentId) {
+      // If there's a parentCommentId, add this comment to the parent's childComments
+      const parentComment: PostComment =
+        commentMap[commentData.parentCommentId];
+      if (parentComment) {
+        parentComment.childComments?.push(comment);
+      }
+    } else {
+      // If there's no parentCommentId, it's a root comment
+      rootComments.push(comment);
+    }
+  });
+
+  console.log(rootComments);
+
+  return rootComments;
+}
+
+export const addComment = async (request: AddCommentRequest) => {
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/addComment`;
+  console.log("calling " + url);
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "*/*", // Match the accept header from the curl command
+      accessToken: request.accessToken,
+    },
+    body: JSON.stringify(request), // Ensure the body matches the expected JSON structure
+  });
+
+  if (!response.ok) {
+    // If the response status is not OK, throw an error
+    const errorText = await response.text();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${errorText}`
+    );
+  }
+
+  const data = await response.json();
+  return data;
+};

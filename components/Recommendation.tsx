@@ -22,7 +22,6 @@ const Recommendation = () => {
       setPostIds(postIds);
 
       const posts = await getBatchPost({ accessToken, postIds });
-      console.log(posts);
       setPosts(posts);
     } catch (error) {
       console.error("Error fetching access token or posts:", error);
