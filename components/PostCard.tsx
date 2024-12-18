@@ -25,13 +25,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
 
   return (
     <TouchableOpacity onPress={handlePress} style={styles.postContainer}>
-      <View style={{ height: "100%", width: "100%" }}>
+      <View style={styles.contentContainer}>
         <View style={styles.imagePlaceholder}>
           <Image
             source={{
               uri: "https://64.media.tumblr.com/b4f649d5fd4e5e8c2ae3bd66a5783016/18ce8e60dacba0b7-c5/s1280x1920/18278335098dbe59b5d5db9f8af65fb7789efbb0.jpg",
             }}
-            style={{ height: "100%", width: "100%" }} // Apply the style here
+            style={styles.image} // Apply the style here
+            resizeMode="cover" // Ensure the image covers the area without stretching
           />
         </View>
         <Text style={[styles.textPadding, styles.postSubject]}>
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
   postContainer: {
     flex: 1,
     marginBottom: hp(0.5),
-    marginHorizontal: wp(0.5),
+    marginHorizontal: wp(1),
     backgroundColor: "#f9fcff",
     borderRadius: wp(3),
     alignItems: "flex-start",
@@ -65,7 +66,18 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
     overflow: "hidden",
-    height: hp(30), // Increase height if needed
+    width: "45%",
+  },
+  contentContainer: {
+    width: "100%",
+  },
+  imagePlaceholder: {
+    width: "100%",
+    aspectRatio: 1, // Maintain a square aspect ratio
+  },
+  image: {
+    width: "100%",
+    height: "100%",
   },
   textPadding: {
     paddingHorizontal: wp(3),
@@ -75,17 +87,6 @@ const styles = StyleSheet.create({
     fontSize: hp(1.5),
     color: theme.light.text,
     flexWrap: "wrap",
-  },
-  imagePlaceholder: {
-    width: "100%",
-    height: "70%", // Adjust height to allow more space for text
-    backgroundColor: "blue",
-  },
-  textContainer: {
-    flexDirection: "column", // Stack text elements vertically
-    alignItems: "flex-start",
-    paddingHorizontal: wp(3),
-    paddingVertical: hp(0.5),
   },
   postAuthor: {
     fontSize: hp(1),
