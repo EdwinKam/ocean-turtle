@@ -1,5 +1,6 @@
 import { Post } from "@/model/post";
 import {
+  AddCommentRequest,
   CreatePostRequest,
   GetBatchPostRequest,
   GetRecommendationPostRequest,
@@ -298,3 +299,28 @@ export async function getPostComments(
 
   return rootComments;
 }
+
+export const addComment = async (request: AddCommentRequest) => {
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/addComment`;
+  console.log("calling " + url);
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "*/*", // Match the accept header from the curl command
+      accessToken: request.accessToken,
+    },
+    body: JSON.stringify(request), // Ensure the body matches the expected JSON structure
+  });
+
+  if (!response.ok) {
+    // If the response status is not OK, throw an error
+    const errorText = await response.text();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${errorText}`
+    );
+  }
+
+  const data = await response.json();
+  return data;
+};
