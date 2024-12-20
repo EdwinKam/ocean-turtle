@@ -29,12 +29,7 @@ const PostList = ({
     <View style={styles.container}>
       {!posts ? (
         // Show loading cards when there are no posts
-        <FlatList
-          data={[...Array(20).keys()]} // Create an array to render multiple loading cards
-          keyExtractor={(item) => item.toString()}
-          numColumns={2}
-          renderItem={() => <LoadingPostCard />}
-        />
+        <LoadingPostCard />
       ) : posts.length === 0 ? (
         <Text>empty</Text>
       ) : (
