@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/common";
 import PostCard from "@/components/PostCard";
@@ -21,40 +27,66 @@ const PostList = ({
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await triggerRefresh(); // Call the refresh function passed from the parent
+    await triggerRefresh();
     setRefreshing(false);
   };
 
+  if (!posts) {
+    return <LoadingPostCard />;
+  }
+
+  if (posts.length === 0) {
+    return <Text>empty</Text>;
+  }
+
+  // Split posts into two columns
+  const leftColumnPosts = posts.filter((_, index) => index % 2 === 0);
+  const rightColumnPosts = posts.filter((_, index) => index % 2 !== 0);
+
   return (
-    <View style={styles.container}>
-      {!posts ? (
-        // Show loading cards when there are no posts
-        <LoadingPostCard />
-      ) : posts.length === 0 ? (
-        <Text>empty</Text>
-      ) : (
-        // Show real posts when available
-        <FlatList
-          data={posts}
-          keyExtractor={(item) => item.id} // Use a unique identifier if available
-          numColumns={2}
-          renderItem={({ item }) => (
-            <PostCard post={item} showCreationDate={showCreationDate} />
-          )}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-        />
-      )}
-    </View>
+    <ScrollView
+      contentContainerStyle={styles.scrollView}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      <View style={styles.container}>
+        <View style={styles.column}>
+          {leftColumnPosts.map((post) => (
+            <View key={post.id} style={styles.postCardContainer}>
+              <PostCard post={post} showCreationDate={showCreationDate} />
+            </View>
+          ))}
+        </View>
+        <View style={styles.column}>
+          {rightColumnPosts.map((post) => (
+            <View key={post.id} style={styles.postCardContainer}>
+              <PostCard post={post} showCreationDate={showCreationDate} />
+            </View>
+          ))}
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
 export default PostList;
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+  },
   container: {
-    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
     padding: wp(1),
-    backgroundColor: theme.light.background, // Use light theme background
+    backgroundColor: theme.light.background,
+  },
+  column: {
+    flex: 1,
+    alignItems: "center", // Center the items in the column
+  },
+  postCardContainer: {
+    width: wp(48), // Each post card takes up 48% of the screen width
   },
 });

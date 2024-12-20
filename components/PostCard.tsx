@@ -62,6 +62,9 @@ const TextPostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
 };
 
 const ImagePostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
+  const formattedDate = post.creationTs
+    ? format(new Date(post.creationTs), "MMM d, yyyy")
+    : "null";
   return (
     <View style={styles.contentContainer}>
       <View style={styles.imagePlaceholder}>
@@ -103,7 +106,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
     overflow: "hidden",
-    width: "45%",
   },
   contentContainer: {
     width: "100%",
