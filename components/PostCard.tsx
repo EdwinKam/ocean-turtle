@@ -37,7 +37,6 @@ const TextPostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
 
   post = {
     ...post,
-    subject: "This is a post",
   };
 
   return (

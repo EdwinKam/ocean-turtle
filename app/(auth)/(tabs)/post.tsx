@@ -13,7 +13,7 @@ const Post = () => {
   const router = useRouter();
 
   const [postContent, setPostContent] = React.useState("");
-  const [postTitle, setPostTitle] = React.useState("");
+  const [postSubject, setPostSubject] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const { setCreatedPost } = useAfterAuthContext();
 
@@ -21,7 +21,11 @@ const Post = () => {
     setLoading(true);
     try {
       const accessToken = (await auth().currentUser?.getIdToken()) || "";
-      await createPost({ accessToken, content: postContent, title: postTitle });
+      await createPost({
+        accessToken,
+        content: postContent,
+        subject: postSubject,
+      });
       setCreatedPost((prev) => prev + 1);
       router.push("/home");
     } catch (error) {
@@ -37,8 +41,8 @@ const Post = () => {
         <TextInput
           placeholder="Enter post title"
           style={styles.customInput}
-          value={postTitle}
-          onChangeText={setPostTitle}
+          value={postSubject}
+          onChangeText={setPostSubject}
         />
         <TextInput
           placeholder="Enter post content"
