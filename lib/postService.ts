@@ -22,7 +22,10 @@ export const createPost = async (request: CreatePostRequest) => {
         Accept: "*/*", // Match the accept header from the curl command
         accessToken: request.accessToken,
       },
-      body: JSON.stringify({ postContent: request.content }), // Ensure the body matches the expected JSON structure
+      body: JSON.stringify({
+        postContent: request.content,
+        postSubject: request.subject,
+      }), // Ensure the body matches the expected JSON structure
     }
   );
 

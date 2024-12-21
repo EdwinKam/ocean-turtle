@@ -14,41 +14,80 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
   const router = useRouter();
 
-  // Format the creationTs to the desired format
-  const formattedDate = post.creationTs
-    ? format(new Date(post.creationTs), "MMM d, yyyy")
-    : "null";
-
   const handlePress = () => {
     router.push(`/viewpost/${post.id}`); // Navigate to the /post route
   };
 
   return (
     <TouchableOpacity onPress={handlePress} style={styles.postContainer}>
-      <View style={styles.contentContainer}>
-        <View style={styles.imagePlaceholder}>
-          <Image
-            source={{
-              uri: "https://64.media.tumblr.com/b4f649d5fd4e5e8c2ae3bd66a5783016/18ce8e60dacba0b7-c5/s1280x1920/18278335098dbe59b5d5db9f8af65fb7789efbb0.jpg",
-            }}
-            style={styles.image} // Apply the style here
-            resizeMode="cover" // Ensure the image covers the area without stretching
-          />
-        </View>
-        <Text style={[styles.textPadding, styles.postSubject]}>
-          {post.content}
-        </Text>
-        {!showCreationDate ? (
-          <Text style={[styles.textPadding, styles.postAuthor]}>
-            {post.author?.username || "null"}
-          </Text>
-        ) : (
-          <Text style={[styles.textPadding, styles.creationDate]}>
-            {formattedDate}
-          </Text>
-        )}
-      </View>
+      {Math.random() > 0.5 ? (
+        <ImagePostCard post={post} showCreationDate={showCreationDate} />
+      ) : (
+        <TextPostCard post={post} showCreationDate={showCreationDate} />
+      )}
     </TouchableOpacity>
+  );
+};
+
+const TextPostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
+  // Format the creationTs to the desired format
+  const formattedDate = post.creationTs
+    ? format(new Date(post.creationTs), "MMM d, yyyy")
+    : "null";
+
+  post = {
+    ...post,
+  };
+
+  return (
+    <View style={styles.contentContainer}>
+      <Text style={[styles.textPadding, styles.postSubject]}>
+        {post.subject}
+      </Text>
+      <Text style={[styles.textPadding, styles.postSubject]}>
+        {post.content}
+      </Text>
+      {!showCreationDate ? (
+        <Text style={[styles.textPadding, styles.postAuthor]}>
+          {post.author?.username || "null"}
+        </Text>
+      ) : (
+        <Text style={[styles.textPadding, styles.creationDate]}>
+          {formattedDate}
+        </Text>
+      )}
+    </View>
+  );
+};
+
+const ImagePostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
+  const formattedDate = post.creationTs
+    ? format(new Date(post.creationTs), "MMM d, yyyy")
+    : "null";
+  return (
+    <View style={styles.contentContainer}>
+      <View style={styles.imagePlaceholder}>
+        <Image
+          source={{
+            uri: "https://64.media.tumblr.com/b4f649d5fd4e5e8c2ae3bd66a5783016/18ce8e60dacba0b7-c5/s1280x1920/18278335098dbe59b5d5db9f8af65fb7789efbb0.jpg",
+          }}
+          style={styles.image} // Apply the style here
+          resizeMode="cover" // Ensure the image covers the area without stretching
+        />
+      </View>
+      <Text style={[styles.textPadding, styles.postSubject]}>
+        {post.content}
+      </Text>
+      {!showCreationDate ? (
+        <Text style={[styles.textPadding, styles.postAuthor]}>
+          {post.author?.username || "null"}
+        </Text>
+      ) : (
+        <Text style={[styles.textPadding, styles.creationDate]}>
+          {formattedDate}
+        </Text>
+      )}
+    </View>
   );
 };
 
@@ -66,7 +105,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
     overflow: "hidden",
-    width: "45%",
   },
   contentContainer: {
     width: "100%",
