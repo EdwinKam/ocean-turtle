@@ -8,6 +8,7 @@ import { createPost } from "@/lib/postService";
 import { useRouter } from "expo-router";
 import auth from "@react-native-firebase/auth";
 import { useAfterAuthContext } from "@/components/globalContext";
+import ImagePickerExample from "@/components/UploadImage";
 
 const Post = () => {
   const router = useRouter();
@@ -52,6 +53,7 @@ const Post = () => {
           multiline={true} // Allow multiple lines
         />
         <Button title={"Submit"} onPress={submitCreatePost} loading={loading} />
+        <ImagePickerExample />
       </View>
     </ScreenWrapper>
   );
