@@ -27,6 +27,7 @@ const Post = () => {
         accessToken,
         content: postContent,
         subject: postSubject,
+        imageUri: image || "",
       });
       setCreatedPost((prev) => prev + 1);
       router.push("/home");
