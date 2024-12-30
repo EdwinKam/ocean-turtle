@@ -243,6 +243,8 @@ export async function readPost(
     author: author,
   };
 
+  console.log(post);
+
   return post;
 }
 
