@@ -8,7 +8,7 @@ import { createPost } from "@/lib/postService";
 import { useRouter } from "expo-router";
 import auth from "@react-native-firebase/auth";
 import { useAfterAuthContext } from "@/components/globalContext";
-import ImagePickerExample from "@/components/UploadImage";
+import ImagePicker from "@/components/ImagePicker";
 
 const Post = () => {
   const router = useRouter();
@@ -16,6 +16,7 @@ const Post = () => {
   const [postContent, setPostContent] = React.useState("");
   const [postSubject, setPostSubject] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [image, setImage] = React.useState<string | null>(null);
   const { setCreatedPost } = useAfterAuthContext();
 
   const submitCreatePost = async () => {
@@ -39,6 +40,7 @@ const Post = () => {
   return (
     <ScreenWrapper>
       <View style={styles.container}>
+        <ImagePicker image={image} setImage={setImage} />
         <TextInput
           placeholder="Enter post title"
           style={styles.customInput}
@@ -53,7 +55,6 @@ const Post = () => {
           multiline={true} // Allow multiple lines
         />
         <Button title={"Submit"} onPress={submitCreatePost} loading={loading} />
-        <ImagePickerExample />
       </View>
     </ScreenWrapper>
   );
