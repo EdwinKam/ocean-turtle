@@ -1,38 +1,38 @@
-import { Post } from "@/model/post";
+import { Post } from '@/model/post';
+import { PostComment } from '@/model/postComment';
+import User from '@/model/user';
 import {
   AddCommentRequest,
   CreatePostRequest,
   GetBatchPostRequest,
   GetRecommendationPostRequest,
-} from "@/model/whaleRequests";
-import { getBatchUser } from "./userService";
-import User from "@/model/user";
-import { PostComment } from "@/model/postComment";
+} from '@/model/whaleRequests';
+import { getBatchUser } from './userService';
 
 export const createPost = async (request: CreatePostRequest) => {
   console.log(
-    "calling " + `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/create`
+    'calling ' + `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/posts`
   );
   const formData = new FormData();
 
   // Append text data
-  formData.append("postContent", request.content);
-  formData.append("postSubject", request.subject);
+  formData.append('postContent', request.content);
+  formData.append('postSubject', request.subject);
   // Convert the image URI to a Blob and append to FormData
   if (request.imageUri) {
-    formData.append("image", {
+    formData.append('image', {
       uri: request.imageUri,
       name: `photo.jpg`, // You can use a dynamic name or the original file name
-      type: "image/jpeg", // Ensure the correct MIME type
+      type: 'image/jpeg', // Ensure the correct MIME type
     } as any);
   }
 
   console.log(formData);
 
   const response = await fetch(
-    `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/create`,
+    `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/posts`,
     {
-      method: "POST",
+      method: 'POST',
       headers: {
         accessToken: request.accessToken,
       },
@@ -56,16 +56,16 @@ export async function getRecommendationPostIdsForUser(
   request: GetRecommendationPostRequest
 ): Promise<string[]> {
   console.log(
-    "calling " +
+    'calling ' +
       `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/recommendation/get`
   );
   const response = await fetch(
     `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/recommendation/get`,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
-        Accept: "*/*", // Match the accept header from the curl command
+        'Content-Type': 'application/json',
+        Accept: '*/*', // Match the accept header from the curl command
         accessToken: request.accessToken,
       },
     }
@@ -87,7 +87,7 @@ export async function getRecommendationPostIdsForUser(
   ) {
     return data.recommendedPostIds.recommendations as string[];
   } else {
-    throw new Error("Unexpected response structure");
+    throw new Error('Unexpected response structure');
   }
 }
 
@@ -98,16 +98,16 @@ export async function getBatchPost(request: GetBatchPostRequest) {
 
   const queryParams = request.postIds
     .map((id) => `postIds=${encodeURIComponent(id)}`)
-    .join("&");
-  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/getBatchPost?${queryParams}`;
+    .join('&');
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/posts/batch?${queryParams}`;
 
-  console.log("calling " + url);
+  console.log('calling ' + url);
 
   const response = await fetch(url, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
-      Accept: "*/*", // Match the accept header from the curl command
+      'Content-Type': 'application/json',
+      Accept: '*/*', // Match the accept header from the curl command
       accessToken: request.accessToken,
     },
   });
@@ -123,7 +123,7 @@ export async function getBatchPost(request: GetBatchPostRequest) {
   const data = await response.json();
   console.log(data.posts);
   const authorIds: string[] = Array.from(
-    new Set(data.posts.map((post) => post.authorId))
+    new Set(data.posts.map((post: { authorId: any }) => post.authorId))
   ); // get deduped authorId
 
   const userMap: Record<string, User> = await getBatchUser({
@@ -132,25 +132,29 @@ export async function getBatchPost(request: GetBatchPostRequest) {
   });
 
   const posts: Post[] = data.posts
-    .filter((post) => userMap[post.authorId] !== undefined) // Filter out posts with undefined authors
-    .map((post) => ({
+    .filter(
+      (post: { authorId: string | number }) =>
+        userMap[post.authorId] !== undefined
+    ) // Filter out posts with undefined authors
+    .map((post: { authorId: string | number }) => ({
       ...post,
       author: userMap[post.authorId],
     }));
 
+  console.log(posts);
   return posts;
 }
 
 export async function getOwnPosts(accessToken: string): Promise<Post[]> {
-  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/getOwnPosts`;
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/posts/me`;
 
-  console.log("calling " + url);
+  console.log('calling ' + url);
 
   const response = await fetch(url, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
-      Accept: "*/*", // Match the accept header from the curl command
+      'Content-Type': 'application/json',
+      Accept: '*/*', // Match the accept header from the curl command
       accessToken: accessToken,
     },
   });
@@ -166,12 +170,12 @@ export async function getOwnPosts(accessToken: string): Promise<Post[]> {
   const data = await response.json();
 
   if (!data.posts || data.posts.length === 0) {
-    console.log("post is empty");
+    console.log('post is empty');
     return [];
   }
 
   const authorIds: string[] = Array.from(
-    new Set(data.posts.map((post) => post.authorId))
+    new Set(data.posts.map((post: { authorId: any }) => post.authorId))
   ); // get deduped authorId
 
   const userMap: Record<string, User> = await getBatchUser({
@@ -180,8 +184,11 @@ export async function getOwnPosts(accessToken: string): Promise<Post[]> {
   });
 
   const posts: Post[] = data.posts
-    .filter((post) => userMap[post.authorId] !== undefined) // Filter out posts with undefined authors
-    .map((post) => ({
+    .filter(
+      (post: { authorId: string | number }) =>
+        userMap[post.authorId] !== undefined
+    ) // Filter out posts with undefined authors
+    .map((post: { authorId: string | number }) => ({
       ...post,
       author: userMap[post.authorId],
     }));
@@ -193,15 +200,15 @@ export async function readPost(
   accessToken: string,
   postId: string
 ): Promise<Post> {
-  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/readPost?postId=${postId}`;
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/posts/${postId}`;
 
-  console.log("calling " + url);
+  console.log('calling ' + url);
 
   const response = await fetch(url, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
-      Accept: "*/*",
+      'Content-Type': 'application/json',
+      Accept: '*/*',
       accessToken: accessToken,
     },
   });
@@ -252,13 +259,13 @@ export async function getPostComments(
   accessToken: string,
   post: Post
 ): Promise<PostComment[]> {
-  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/getComments?postId=${post.id}`;
-  console.log("calling " + url);
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/posts/${post.id}/comments`;
+  console.log('calling ' + url);
   const response = await fetch(url, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
-      Accept: "*/*",
+      'Content-Type': 'application/json',
+      Accept: '*/*',
       accessToken: accessToken,
     },
   });
@@ -273,7 +280,11 @@ export async function getPostComments(
   const data = await response.json();
 
   const commenterIds: string[] = Array.from(
-    new Set(data.postComments.map((comment) => comment.commenterUid))
+    new Set(
+      data.postComments.map(
+        (comment: { commenterUid: any }) => comment.commenterUid
+      )
+    )
   ); // get deduped authorId
 
   const userMap: Record<string, User> = await getBatchUser({
@@ -317,13 +328,13 @@ export async function getPostComments(
 }
 
 export const addComment = async (request: AddCommentRequest) => {
-  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/post/addComment`;
-  console.log("calling " + url);
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/posts/${request.postId}/comments`;
+  console.log('calling ' + url);
   const response = await fetch(url, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      Accept: "*/*", // Match the accept header from the curl command
+      'Content-Type': 'application/json',
+      Accept: '*/*', // Match the accept header from the curl command
       accessToken: request.accessToken,
     },
     body: JSON.stringify(request), // Ensure the body matches the expected JSON structure
@@ -339,4 +350,68 @@ export const addComment = async (request: AddCommentRequest) => {
 
   const data = await response.json();
   return data;
+};
+
+export const likePost = async (accessToken: string, postId: string) => {
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/posts/${postId}/likes`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: '*/*',
+      accessToken: accessToken,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${errorText}`
+    );
+  }
+};
+
+export const unlikePost = async (accessToken: string, postId: string) => {
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/posts/${postId}/likes`;
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: '*/*',
+      accessToken: accessToken,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${errorText}`
+    );
+  }
+};
+
+export const getPostLikeCount = async (
+  accessToken: string,
+  postId: string
+): Promise<number> => {
+  const url = `${process.env.EXPO_PUBLIC__BACKEND_HOST}/api/posts/${postId}/likes/count`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: '*/*',
+      accessToken: accessToken,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${errorText}`
+    );
+  }
+
+  const likeCount = await response.json();
+  return likeCount;
 };
