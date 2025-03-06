@@ -1,4 +1,4 @@
-import User from "./user";
+import User from './user';
 
 // Define the Post interface
 export interface Post {
@@ -7,5 +7,6 @@ export interface Post {
   content: string;
   author: User;
   creationTs: number;
+  likedByCurrentUser: boolean;
   imageUrls: string[];
 }
