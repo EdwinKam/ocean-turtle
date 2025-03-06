@@ -29,7 +29,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
           fill={isLiked ? theme.light.tint : "transparent"}
         />
         <Text style={[styles.likeCount, isLiked && styles.likeCountLiked]}>
-          {likes}
+          {likes === -1 ? "" : likes}
         </Text>
       </View>
     </Pressable>
