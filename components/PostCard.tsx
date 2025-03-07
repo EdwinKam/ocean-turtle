@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(2),
     backgroundColor: "#ffffff",
     borderRadius: wp(2),
-    borderWidth: 1,
+    // borderWidth: 1,
     borderColor: theme.light.border,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     width: "100%",
-    padding: wp(3),
   },
   imagePlaceholder: {
     width: "100%",
@@ -180,6 +179,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: theme.light.text,
     marginBottom: hp(1),
+    margin: hp(1),
   },
   bottomContainer: {
     flexDirection: "row",
@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
   postContent: {
     fontSize: hp(1.5),
     color: theme.light.text,
+    margin: hp(1),
     marginBottom: hp(0.25),
   },
   postAuthor: {

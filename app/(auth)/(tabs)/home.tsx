@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 0,
     paddingHorizontal: wp(1),
+    backgroundColor: theme.light.background,
   },
 
   title: {
