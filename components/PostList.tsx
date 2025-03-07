@@ -35,10 +35,6 @@ const PostList = ({
     return <LoadingPostCard />;
   }
 
-  if (posts.length === 0) {
-    return <Text>empty</Text>;
-  }
-
   // Split posts into two columns
   const leftColumnPosts = posts.filter((_, index) => index % 2 === 0);
   const rightColumnPosts = posts.filter((_, index) => index % 2 !== 0);
@@ -50,22 +46,26 @@ const PostList = ({
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
     >
-      <View style={styles.container}>
-        <View style={styles.column}>
-          {leftColumnPosts.map((post) => (
-            <View key={post.id} style={styles.postCardContainer}>
-              <PostCard post={post} showCreationDate={showCreationDate} />
-            </View>
-          ))}
+      {posts.length !== 0 ? (
+        <View style={styles.container}>
+          <View style={styles.column}>
+            {leftColumnPosts.map((post) => (
+              <View key={post.id} style={styles.postCardContainer}>
+                <PostCard post={post} showCreationDate={showCreationDate} />
+              </View>
+            ))}
+          </View>
+          <View style={styles.column}>
+            {rightColumnPosts.map((post) => (
+              <View key={post.id} style={styles.postCardContainer}>
+                <PostCard post={post} showCreationDate={showCreationDate} />
+              </View>
+            ))}
+          </View>
         </View>
-        <View style={styles.column}>
-          {rightColumnPosts.map((post) => (
-            <View key={post.id} style={styles.postCardContainer}>
-              <PostCard post={post} showCreationDate={showCreationDate} />
-            </View>
-          ))}
-        </View>
-      </View>
+      ) : (
+        <Text>No Post Found</Text>
+      )}
     </ScrollView>
   );
 };
