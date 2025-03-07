@@ -70,7 +70,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
 
   return (
     <TouchableOpacity onPress={handlePress} style={styles.postContainer}>
-      {Math.random() > 0.5 ? (
+      {post.imageUrls.length ? (
         <ImagePostCard
           post={post}
           showCreationDate={showCreationDate}
@@ -112,13 +112,15 @@ const TextPostCard: React.FC<PostCardChildProps> = ({
 
   return (
     <View style={styles.contentContainer}>
-      {post.subject && <Text style={styles.postSubject}>{post.subject}</Text>}
+      <Text style={styles.postSubject}>{post.subject || post.content}</Text>
       <View style={styles.bottomContainer}>
         <View style={styles.textColumn}>
-          <Text style={styles.postContent}>{post.content}</Text>
+          {post.subject && (
+            <Text style={styles.postContent}>{post.content}</Text>
+          )}
           <Text style={styles.postAuthor}>
             {!showCreationDate
-              ? `@${post.author?.username || "null"}`
+              ? `${post.author?.username || "null"}`
               : formattedDate}
           </Text>
         </View>
