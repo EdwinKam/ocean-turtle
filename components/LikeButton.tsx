@@ -1,6 +1,14 @@
+import React, { useRef } from "react";
 import Icon from "@/assets/icons";
 import { theme } from "@/constants/theme";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  Easing,
+} from "react-native";
 
 type LikeButtonProps = {
   size?: number;
@@ -15,23 +23,43 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   isLiked = false,
   onPress,
 }) => {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    // Start the scale animation
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.2,
+        duration: 150,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 150,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    // Call the onPress function passed as a prop
+    onPress();
+  };
+
   return (
-    <Pressable
-      onPress={onPress}
-      style={[styles.button, isLiked && styles.buttonLiked]}
-    >
-      <View style={styles.container}>
+    <Pressable onPress={handlePress} style={styles.button}>
+      <Animated.View
+        style={[styles.container, { transform: [{ scale: scaleAnim }] }]}
+      >
         <Icon
           name="heart"
           strokeWidth={2.5}
           size={size}
-          color={isLiked ? theme.light.tint : theme.light.text}
-          fill={isLiked ? theme.light.tint : "transparent"}
+          color={isLiked ? "red" : "#808080"}
+          fill={isLiked ? "red" : "transparent"}
         />
-        <Text style={[styles.likeCount, isLiked && styles.likeCountLiked]}>
-          {likes === -1 ? "" : likes}
-        </Text>
-      </View>
+        <Text style={styles.likeCount}>{likes === -1 ? "" : likes}</Text>
+      </Animated.View>
     </Pressable>
   );
 };
@@ -42,11 +70,6 @@ const styles = StyleSheet.create({
   button: {
     alignSelf: "flex-start",
     padding: 5,
-    borderRadius: theme.radius.sm,
-    backgroundColor: "rgba(0,0,0,0.07)",
-  },
-  buttonLiked: {
-    backgroundColor: "rgba(10,126,164,0.1)",
   },
   container: {
     flexDirection: "row",
@@ -55,10 +78,7 @@ const styles = StyleSheet.create({
   },
   likeCount: {
     fontSize: 14,
-    color: theme.light.text,
+    color: "#808080",
     fontWeight: "500",
-  },
-  likeCountLiked: {
-    color: theme.light.tint,
   },
 });

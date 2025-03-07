@@ -71,59 +71,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, showCreationDate }) => {
   return (
     <TouchableOpacity onPress={handlePress} style={styles.postContainer}>
       {post.imageUrls.length ? (
-        <ImagePostCard
-          post={post}
-          showCreationDate={showCreationDate}
-          handleLike={handleLike}
-          isLiked={isLiked}
-          likeCount={likeCount}
-        />
+        <ImagePostCard post={post} showCreationDate={showCreationDate} />
       ) : (
-        <TextPostCard
-          post={post}
-          showCreationDate={showCreationDate}
-          handleLike={handleLike}
-          isLiked={isLiked}
-          likeCount={likeCount}
-        />
+        <TextPostCard post={post} showCreationDate={showCreationDate} />
       )}
-    </TouchableOpacity>
-  );
-};
-
-interface PostCardChildProps {
-  post: Post;
-  showCreationDate?: boolean;
-  handleLike: () => Promise<void>;
-  isLiked: boolean;
-  likeCount: number;
-}
-
-const TextPostCard: React.FC<PostCardChildProps> = ({
-  post,
-  showCreationDate,
-  handleLike,
-  isLiked,
-  likeCount,
-}) => {
-  const formattedDate = post.creationTs
-    ? format(new Date(post.creationTs), "MMM d, yyyy")
-    : "null";
-
-  return (
-    <View style={styles.contentContainer}>
-      <Text style={styles.postSubject}>{post.subject || post.content}</Text>
       <View style={styles.bottomContainer}>
-        <View style={styles.textColumn}>
-          {post.subject && (
-            <Text style={styles.postContent}>{post.content}</Text>
-          )}
-          <Text style={styles.postAuthor}>
-            {!showCreationDate
-              ? `${post.author?.username || "null"}`
-              : formattedDate}
-          </Text>
-        </View>
+        <Text style={styles.postAuthor}>{post.author?.username || "null"}</Text>
         <View style={styles.likeButtonContainer}>
           <LikeButton
             likes={likeCount}
@@ -132,6 +85,41 @@ const TextPostCard: React.FC<PostCardChildProps> = ({
           />
         </View>
       </View>
+    </TouchableOpacity>
+  );
+};
+
+interface PostCardChildProps {
+  post: Post;
+  showCreationDate?: boolean;
+}
+
+const PostContent: React.FC<PostCardChildProps> = ({
+  post,
+  showCreationDate,
+}) => {
+  const formattedDate = post.creationTs
+    ? format(new Date(post.creationTs), "MMM d, yyyy")
+    : "null";
+
+  return (
+    <View style={styles.textColumn}>
+      <Text style={styles.postSubject}>{post.subject || post.content}</Text>
+      {post.subject && <Text style={styles.postContent}>{post.content}</Text>}
+      {showCreationDate && (
+        <Text style={styles.creationDate}>{formattedDate}</Text>
+      )}
+    </View>
+  );
+};
+
+const TextPostCard: React.FC<PostCardChildProps> = ({
+  post,
+  showCreationDate,
+}) => {
+  return (
+    <View style={styles.contentContainer}>
+      <PostContent post={post} showCreationDate={showCreationDate} />
     </View>
   );
 };
@@ -139,14 +127,7 @@ const TextPostCard: React.FC<PostCardChildProps> = ({
 const ImagePostCard: React.FC<PostCardChildProps> = ({
   post,
   showCreationDate,
-  handleLike,
-  isLiked,
-  likeCount,
 }) => {
-  const formattedDate = post.creationTs
-    ? format(new Date(post.creationTs), "MMM d, yyyy")
-    : "null";
-
   return (
     <View style={styles.contentContainer}>
       {post.imageUrls?.[0] && (
@@ -155,34 +136,12 @@ const ImagePostCard: React.FC<PostCardChildProps> = ({
             source={{
               uri: post.imageUrls?.[0] || "",
             }}
-            style={styles.image} // Apply the style here
-            resizeMode="cover" // Ensure the image covers the area without stretching
+            style={styles.image}
+            resizeMode="cover"
           />
         </View>
       )}
-      <View style={styles.bottomContainer}>
-        <View style={styles.textColumn}>
-          <Text style={[styles.textPadding, styles.postSubject]}>
-            {post.content}
-          </Text>
-          {!showCreationDate ? (
-            <Text style={[styles.textPadding, styles.postAuthor]}>
-              {post.author?.username || "null"}
-            </Text>
-          ) : (
-            <Text style={[styles.textPadding, styles.creationDate]}>
-              {formattedDate}
-            </Text>
-          )}
-        </View>
-        <View style={styles.likeButtonContainer}>
-          <LikeButton
-            likes={likeCount}
-            isLiked={isLiked}
-            onPress={handleLike}
-          />
-        </View>
-      </View>
+      <PostContent post={post} showCreationDate={showCreationDate} />
     </View>
   );
 };
@@ -194,6 +153,8 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(2),
     backgroundColor: "#ffffff",
     borderRadius: wp(2),
+    borderWidth: 1,
+    borderColor: theme.light.border,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -222,7 +183,10 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     flexDirection: "row",
-    paddingTop: hp(1),
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(1),
   },
   textColumn: {
     flex: 1,
@@ -241,7 +205,6 @@ const styles = StyleSheet.create({
   likeButtonContainer: {
     justifyContent: "center",
     alignItems: "center",
-    paddingLeft: wp(2),
   },
   textPadding: {
     paddingHorizontal: wp(3),
