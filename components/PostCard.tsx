@@ -153,8 +153,6 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(2),
     backgroundColor: "#ffffff",
     borderRadius: wp(2),
-    // borderWidth: 1,
-    borderColor: theme.light.border,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
